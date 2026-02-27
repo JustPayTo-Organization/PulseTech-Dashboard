@@ -148,10 +148,10 @@ const DownloadQueueUI: React.FC = () => {
   // --- UI Helpers ---
   const StatusBadge = ({ status }: { status: JobStatus }) => {
     const styles = {
-      queued: 'bg-blue-50 text-blue-700 border-blue-100',
-      ready: 'bg-green-50 text-green-700 border-green-100',
+      queued: 'bg-stone-50 text-stone-600 border-stone-100',
+      ready: 'bg-emerald-50 text-emerald-700 border-emerald-100',
       failed: 'bg-red-50 text-red-700 border-red-100',
-      downloading: 'bg-gray-50 text-gray-700 border-gray-100',
+      downloading: 'bg-emerald-50/50 text-emerald-600 border-emerald-100/50 animate-pulse',
     };
     const icons = {
       queued: <Clock size={14} className="mr-1" />,
@@ -160,35 +160,42 @@ const DownloadQueueUI: React.FC = () => {
       downloading: <CircleArrowDown size={14} className="mr-1" />,
     };
     return (
-      <span className={`flex items-center w-fit px-2.5 py-0.5 rounded-full text-xs font-medium border ${styles[status]}`}>
+      <span className={`flex items-center w-fit px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${styles[status]}`}>
         {icons[status]}
-        {status.toUpperCase()}
+        {status}
       </span>
     );
   };
 
   return (
-    <div className="mt-12 md:mt-0 p-4 md:p-8 bg-gray-50 min-h-screen font-sans text-slate-900">
-      <div className="max-w-6xl mx-auto">
+    <div className="relative mt-12 md:mt-0 p-4 md:p-8 bg-[#f8faf9] min-h-screen font-sans text-stone-700 overflow-hidden">
+        
+        {/* PulseTech Background Accents */}
+        <div className="absolute top-[-10%] left-[-5%] w-[60%] h-[60%] rounded-full bg-emerald-50/50 blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] rounded-full bg-green-50/40 blur-[100px] pointer-events-none" />
+
+      <div className="relative z-10 max-w-6xl mx-auto">
 
         {/* Back Navigation */}
         <div className="mb-6">
           <button
             onClick={() => window.location.href = '/transactions'}
-            className="flex items-center text-slate-500 hover:text-slate-800 transition-colors text-sm font-medium group"
+            className="flex items-center text-stone-400 hover:text-emerald-500 transition-colors text-xs font-bold uppercase tracking-widest group"
           >
-            <ChevronLeft size={20} className="mr-1 group-hover:-translate-x-1 transition-transform" />
+            <ChevronLeft size={18} className="mr-1 group-hover:-translate-x-1 transition-transform" />
             Back to Transactions
           </button>
         </div>
 
         {/* Header & Bulk Actions */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-          <h1 className="text-2xl font-bold text-slate-800">Download Queue</h1>
+          <h1 className="text-3xl font-extrabold text-stone-700 tracking-tight">
+            Download <span className="text-emerald-500">Queue</span>
+          </h1>
           <div className="flex gap-2">
             <button
               onClick={clearCompleted}
-              className="flex items-center px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+              className="flex items-center px-4 py-2 text-sm font-bold text-stone-500 bg-white/50 backdrop-blur-sm border border-stone-100 rounded-xl hover:bg-white hover:text-red-500 transition-all shadow-sm"
             >
               <Trash2 size={16} className="mr-2" />
               Clear Finished
@@ -196,7 +203,7 @@ const DownloadQueueUI: React.FC = () => {
             <button
               onClick={downloadAllReady}
               disabled={isDownloadingAll || !jobs.some(j => j.status === 'ready')}
-              className="flex items-center px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+              className="flex items-center px-6 py-2 text-sm font-bold text-white bg-emerald-500 rounded-xl hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-emerald-500/20 active:scale-[0.98]"
             >
               <Download size={16} className="mr-2" />
               {isDownloadingAll ? 'Processing...' : 'Download Ready'}
@@ -206,59 +213,59 @@ const DownloadQueueUI: React.FC = () => {
 
         {/* Filter Bar */}
         <div className="mb-6 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-400" size={18} />
           <input
             type="text"
             placeholder="Search files..."
-            className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-sm"
+            className="w-full pl-11 pr-4 py-3.5 bg-white/70 backdrop-blur-xl border border-white rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-400 outline-none transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-stone-700 placeholder-stone-300 font-medium"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
         {/* Desktop Table View */}
-        <div className="hidden md:block bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="hidden md:block bg-white/70 backdrop-blur-xl rounded-[2rem] shadow-[0_20px_50px_rgba(16,185,129,0.05)] border border-white overflow-hidden">
           <table className="w-full text-left border-collapse">
-            <thead className="bg-slate-50 border-b border-slate-200">
+            <thead className="bg-stone-50/50 border-b border-stone-100">
               <tr>
-                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">Filename</th>
-                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">Status</th>
-                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">Transactions</th>
-                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">Date Added</th>
-                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase text-right">Actions</th>
+                <th className="px-8 py-5 text-[10px] font-bold text-stone-400 uppercase tracking-widest">Filename</th>
+                <th className="px-8 py-5 text-[10px] font-bold text-stone-400 uppercase tracking-widest">Status</th>
+                <th className="px-8 py-5 text-[10px] font-bold text-stone-400 uppercase tracking-widest">Transactions</th>
+                <th className="px-8 py-5 text-[10px] font-bold text-stone-400 uppercase tracking-widest">Date Added</th>
+                <th className="px-8 py-5 text-[10px] font-bold text-stone-400 uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-stone-50">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="p-12 text-center text-slate-400">Loading queue...</td>
+                  <td colSpan={5} className="p-16 text-center text-stone-300 font-medium italic">Loading queue...</td>
                 </tr>
               ) : filteredJobs.length > 0 ? (
                 filteredJobs.map(job => (
-                  <tr key={job.id} className="hover:bg-slate-50 transition-colors group">
-                    <td className="px-6 py-4">
+                  <tr key={job.id} className="hover:bg-emerald-50/30 transition-colors group">
+                    <td className="px-8 py-5">
                       <div className="flex items-center">
-                        <FileText className="text-slate-400 mr-3" size={20} />
-                        <span className="font-medium text-slate-700">{job.name}</span>
+                        <FileText className="text-emerald-400 mr-3" size={20} />
+                        <span className="font-bold text-stone-700">{job.name}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-8 py-5">
                       <StatusBadge status={job.status} />
                     </td>
-                    <td className="px-6 py-4 text-slate-600 text-sm">{job.transactions.length} items</td>
-                    <td className="px-6 py-4 text-slate-500 text-sm">{job.createdAt}</td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-8 py-5 text-stone-500 text-sm font-medium">{job.transactions.length} items</td>
+                    <td className="px-8 py-5 text-stone-400 text-sm font-medium">{job.createdAt}</td>
+                    <td className="px-8 py-5 text-right">
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => handleDownloadWithProgress(job)}
                           disabled={job.status !== 'ready'}
-                          className={`p-2 rounded-lg transition-colors ${job.status === 'ready' ? 'text-emerald-600 hover:bg-emerald-50' : 'text-slate-300 cursor-not-allowed'}`}
+                          className={`p-2.5 rounded-xl transition-all ${job.status === 'ready' ? 'text-emerald-500 hover:bg-emerald-50 hover:scale-110 shadow-sm' : 'text-stone-200 cursor-not-allowed'}`}
                         >
                           <Download size={18} />
                         </button>
                         <button
                           onClick={() => removeJob(job.id)}
-                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-2.5 text-stone-300 hover:text-red-500 hover:bg-red-50 hover:scale-110 rounded-xl transition-all"
                         >
                           <Trash2 size={18} />
                         </button>
@@ -268,7 +275,7 @@ const DownloadQueueUI: React.FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="p-12 text-center text-slate-400">No downloads in queue.</td>
+                  <td colSpan={5} className="p-16 text-center text-stone-300 font-medium italic">No downloads in queue.</td>
                 </tr>
               )}
             </tbody>
@@ -278,36 +285,36 @@ const DownloadQueueUI: React.FC = () => {
         {/* Mobile Card View */}
         <div className="md:hidden space-y-4">
           {loading ? (
-            <div className="p-12 text-center text-slate-400">Loading queue...</div>
+            <div className="p-12 text-center text-stone-300 font-medium italic">Loading queue...</div>
           ) : filteredJobs.length === 0 ? (
-            <div className="p-12 text-center text-slate-400">No downloads in queue.</div>
+            <div className="p-12 text-center text-stone-300 font-medium italic">No downloads in queue.</div>
           ) : filteredJobs.map(job => (
-            <div key={job.id} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div key={job.id} className="bg-white/70 backdrop-blur-xl p-6 rounded-[2rem] border border-white shadow-sm">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center">
-                  <div className="p-2 bg-slate-100 rounded-lg mr-3">
-                    <FileText size={20} className="text-slate-600" />
+                  <div className="p-2.5 bg-emerald-50 rounded-2xl mr-3">
+                    <FileText size={20} className="text-emerald-500" />
                   </div>
                   <div>
-                    <h3 className="text-xs sm:text-base font-bold text-slate-800 leading-tight">{job.name}</h3>
-                    <p className="text-xs text-slate-500">{job.createdAt}</p>
+                    <h3 className="text-sm font-bold text-stone-700 leading-tight">{job.name}</h3>
+                    <p className="text-[10px] text-stone-400 font-bold uppercase tracking-wider mt-0.5">{job.createdAt}</p>
                   </div>
                 </div>
                 <StatusBadge status={job.status} />
               </div>
-              <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                <span className="text-sm text-slate-500">{job.transactions.length} Transactions</span>
-                <div className="flex gap-3">
+              <div className="flex items-center justify-between pt-4 border-t border-stone-50">
+                <span className="text-xs font-bold text-stone-400 uppercase tracking-widest">{job.transactions.length} items</span>
+                <div className="flex gap-4">
                   <button
                     onClick={() => removeJob(job.id)}
-                    className="flex items-center text-sm font-medium text-slate-500"
+                    className="flex items-center text-xs font-bold text-stone-400 hover:text-red-500 uppercase tracking-widest transition-colors"
                   >
                     Remove
                   </button>
                   <button
                     onClick={() => handleDownloadWithProgress(job)}
                     disabled={job.status !== 'ready'}
-                    className="flex items-center text-sm font-bold text-emerald-600 disabled:opacity-30"
+                    className="flex items-center text-xs font-black text-emerald-500 disabled:opacity-30 uppercase tracking-widest"
                   >
                     Download
                   </button>

@@ -34,7 +34,6 @@ interface withdrawalAccount {
     merchant_id: string;
 }
 
-
 const Withdrawal: React.FC = () => {
     const API_URL = import.meta.env.VITE_API_URL;
     const API_URL2 = import.meta.env.VITE_API_URL;
@@ -43,6 +42,7 @@ const Withdrawal: React.FC = () => {
     const [_loadingAccounts, setLoadingAccounts] = useState<boolean>(true);
     const [_errorAccounts, setErrorAccounts] = useState<string | null>(null);
     const [amountError, setAmountError] = useState<string | null>(null);
+    
     // Loading states
     const [_loading, setLoading] = useState(true);
     const [withdrawalAccountsLoading, setWithdrawalAccountsLoading] = useState(true);
@@ -150,7 +150,6 @@ const Withdrawal: React.FC = () => {
         }, 0);
     };
 
-
     const handleAmountBlur = () => {
         const value = formData.amount.trim();
 
@@ -199,7 +198,6 @@ const Withdrawal: React.FC = () => {
     }
 
     useEffect(() => {
-        
         const fetchAccounts = async () => {
             try {
                 setLoadingAccounts(true);
@@ -286,8 +284,6 @@ const Withdrawal: React.FC = () => {
         }
 
         try {
-            
-
             // Build request payload to match WithdrawalRequest
             const payload = {
                 wallet_id: `${selectedAccountId}`, 
@@ -324,26 +320,26 @@ const Withdrawal: React.FC = () => {
     };
 
     const Spinner = () => (
-        <span className="inline-block w-8 h-8 border-4 border-white/30 border-t-blue-300 rounded-full animate-spin" />
+        <span className="inline-block w-8 h-8 border-4 border-white/30 border-t-emerald-400 rounded-full animate-spin" />
     );
 
     return (
-        <div className="p-4 md:p-8">
-            <h1 className="text-3xl font-bold mb-6 mt-12 lg:mt-0">Withdraw Details</h1>
+        <div className="p-4 md:p-8 bg-stone-50 min-h-screen">
+            <h1 className="text-3xl font-extrabold mb-6 mt-12 lg:mt-0 text-stone-700">Withdraw Details</h1>
 
             <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
 
                 {/* LEFT: Withdrawal Form */}
-                <div className="flex-7 bg-white rounded-2xl shadow-lg p-6 flex flex-col">
+                <div className="flex-7 bg-white rounded-2xl shadow-xl p-6 flex flex-col border border-emerald-100">
 
                     {/* Transfer Method */}
                     <div className='mb-10'>
-                        <h2 className="text-xl font-semibold text-gray-600 mb-2">Transfer Method</h2>
+                        <h2 className="text-xl font-semibold text-emerald-800/70 mb-2">Transfer Method</h2>
                         <div className="flex gap-4">
                             {/* Instapay */}
                             <label
                             className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all w-full ${
-                                formData.method === "instapay" ? "border-teal-500 bg-teal-50" : "border-gray-200 hover:border-gray-300"
+                                formData.method === "instapay" ? "border-emerald-600 bg-emerald-50" : "border-gray-200 hover:border-emerald-200"
                             }`}
                             >
                             <input
@@ -356,21 +352,21 @@ const Withdrawal: React.FC = () => {
                             />
                             <div
                                 className={`p-2 rounded-lg ${
-                                formData.method === "instapay" ? "bg-teal-500 text-white" : "bg-gray-100 text-gray-600"
+                                formData.method === "instapay" ? "bg-emerald-700 text-white" : "bg-emerald-100 text-emerald-700"
                                 }`}
                             >
                                 <TbSend className="w-5 h-5" />
                             </div>
                             <div>
-                                <p className="font-medium text-gray-900">Instapay</p>
-                                <p className="text-xs text-gray-500">Instant transfer up to ₱50,000</p>
+                                <p className="font-medium text-emerald-950">Instapay</p>
+                                <p className="text-xs text-emerald-600/70">Instant transfer up to ₱50,000</p>
                             </div>
                             </label>
 
                             {/* PESONet */}
                             {/* <label
                             className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all w-full ${
-                                formData.method === "pesonet" ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-gray-300"
+                                formData.method === "pesonet" ? "border-emerald-500 bg-emerald-50" : "border-gray-200 hover:border-gray-300"
                             }`}
                             >
                             <input
@@ -383,7 +379,7 @@ const Withdrawal: React.FC = () => {
                             />
                             <div
                                 className={`p-2 rounded-lg ${
-                                formData.method === "pesonet" ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-600"
+                                formData.method === "pesonet" ? "bg-emerald-500 text-white" : "bg-gray-100 text-gray-600"
                                 }`}
                             >
                                 <LuBuilding2 className="w-5 h-5" />
@@ -398,20 +394,15 @@ const Withdrawal: React.FC = () => {
                     
                     {/* Depository Account Selection */}
                     <div className="w-full max-w-5xl mx-auto p-4">
-                        <h2 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-4">
+                        <h2 className="text-sm font-bold text-emerald-800/50 uppercase tracking-widest mb-4">
                             Withdrawal Account
                         </h2>
 
-                        {/* Using a 6-column grid on desktop:
-                            - Cards span 3 columns (3+3 = 6), forcing exactly 2 per row.
-                            - On mobile/small screens, they span the full width.
-                        */}
-                        
                             {withdrawalAccountsLoading ?
                             (
                                 // Loading state
                                 <div className="flex justify-center items-center p-8">
-                                <Spinner /> {/* Replace with your spinner component */}
+                                <Spinner />
                                 </div>
                             ) : _withdrawalAccounts.length === 0 ? (
                                 // No accounts
@@ -428,8 +419,8 @@ const Withdrawal: React.FC = () => {
                                         className={`
                                             relative md:col-span-3 flex items-center gap-4 p-4 cursor-pointer rounded-xl border-2 transition-all duration-200
                                             ${isSelected
-                                            ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600 shadow-sm"
-                                            : "border-gray-200 bg-white hover:border-gray-300"
+                                            ? "border-emerald-700 bg-emerald-50 ring-1 ring-emerald-700 shadow-md"
+                                            : "border-gray-200 bg-white hover:border-emerald-300"
                                             }
                                         `}
                                         >
@@ -443,33 +434,33 @@ const Withdrawal: React.FC = () => {
 
                                         <div className={`
                                             shrink-0 w-12 h-12 flex items-center justify-center rounded-xl transition-colors
-                                            ${isSelected ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-500"}
+                                            ${isSelected ? "bg-emerald-800 text-white" : "bg-emerald-100 text-emerald-600"}
                                         `}>
                                             {isBank ? <Landmark size={22} /> : <CreditCard size={22} />}
                                         </div>
 
                                         <div className="flex flex-col min-w-0">
-                                            <span className={`font-bold truncate ${isSelected ? "text-blue-900" : "text-gray-900"}`}>
+                                            <span className={`font-bold truncate ${isSelected ? "text-emerald-900" : "text-gray-900"}`}>
                                             {account.account_name}
                                             </span>
-                                            <span className="text-sm font-medium text-gray-500">
+                                            <span className="text-sm font-medium text-emerald-800/60">
                                             {account.account_number}
                                             </span>
-                                            <span className="text-xs text-gray-400 font-semibold uppercase tracking-tighter mt-0.5">
+                                            <span className="text-xs text-emerald-700/40 font-semibold uppercase tracking-tighter mt-0.5">
                                             {account.bank_code.replace("_", " ")}
                                             </span>
                                         </div>
-                                    </label>
-                                );
+                                        </label>
+                                    );
                                 })}
                         </div>
                         )}
                     </div>
+
                     {/* Form */}
-                    
                         <form onSubmit={handleSubmit} className="flex flex-col flex-1 space-y-8">
                             <div>
-                                <label className="block text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Amount</label>
+                                <label className="block text-sm font-semibold text-emerald-800/50 uppercase tracking-wider mb-4">Amount</label>
                                 <input 
                                     ref={amountInputRef}
                                     type="text" 
@@ -479,7 +470,7 @@ const Withdrawal: React.FC = () => {
                                     onBlur={handleAmountBlur} 
                                     placeholder="Enter amount" 
                                     className={`w-full rounded-lg border px-3 py-2 focus:outline-none appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-moz-appearance]:textfield ${
-                                        amountError ? "border-red-500 focus:ring-red-300" : "border-gray-300 focus:ring-blue-300"
+                                        amountError ? "border-red-500 focus:ring-red-300" : "border-emerald-200 focus:ring-emerald-500/30 focus:border-emerald-500"
                                     }`}
                                     required
                                 />
@@ -507,25 +498,24 @@ const Withdrawal: React.FC = () => {
                             </div> */}
 
                         </form>
-                    
                 </div>
 
                 {/* RIGHT: Balance + Transfer Info */}
                 <div className="flex-3 flex flex-col gap-6">
 
-                    <div className="bg-[#132440] rounded-2xl shadow-lg p-6">
+                    <div className="bg-[#062016] rounded-2xl shadow-lg p-6 border-b-4 border-emerald-600">
                         <div className='flex items-center'>
-                            <div className='bg-white/10 p-3 rounded-lg mr-2'>
-                                <FaWallet className='text-teal-400'/>                        
+                            <div className='bg-emerald-500/20 p-3 rounded-lg mr-2'>
+                                <FaWallet className='text-emerald-400'/>                        
                             </div>
                             <div>
-                                <h2 className="text-gray-400 text-lg">Available Balance</h2>
+                                <h2 className="text-emerald-200/60 text-lg">Available Balance</h2>
                             </div>
                         </div>
                         <p className={`text-4xl font-bold mt-2 ${
                             _accounts?.BALANCE
                                 ? "text-white"
-                                : "text-red-500 text-[18px]"
+                                : "text-red-400 text-[18px]"
                         }`}>
                             { _loadingAccounts ? (
                                 <Spinner/>
@@ -537,49 +527,50 @@ const Withdrawal: React.FC = () => {
                     </div>
 
                     {/* Summary Info */}
-                    <div className="bg-white rounded-2xl shadow-lg p-5 space-y-4">
+                    <div className="bg-white rounded-2xl shadow-lg p-5 space-y-4 border border-emerald-100">
 
-                        <h4 className="font-semibold">Summary</h4>
+                        <h4 className="font-semibold text-emerald-900">Summary</h4>
 
                         {formData.method === "instapay" && (
-                            <p className='text-xs text-gray-500'>
+                            <p className='text-xs text-emerald-600/70'>
                                 Max Instapay Transfer Amount: ₱50,000.00
                             </p>
                         )}
 
                         <div className="flex justify-between">
-                            <span className="text-gray-600">Amount</span>
-                            <span className="font-medium">₱{formatNumberWithCommas(amountNumber.toFixed(2))}</span>
+                            <span className="text-emerald-800/60">Amount</span>
+                            <span className="font-medium text-emerald-950">₱{formatNumberWithCommas(amountNumber.toFixed(2))}</span>
                         </div>
 
                         <div className="flex justify-between">
-                            <span className="text-gray-600">Number of Transfers:</span>
-                            <span className="font-medium">
+                            <span className="text-emerald-800/60">Number of Transfers:</span>
+                            <span className="font-medium text-emerald-950">
                                 {calculateTransfers(Number(amountNumber))}
                             </span>
                         </div>
 
                         <div className="flex justify-between">
-                            <span className="text-gray-600">Fees:</span>
-                            <span className="font-medium">
+                            <span className="text-emerald-800/60">Fees:</span>
+                            <span className="font-medium text-emerald-950">
                                 ₱{calculateFee(Number(amountNumber))}
                             </span>
                         </div>
 
-                        <div className="flex justify-between border-t pt-2 mt-2">
-                            <span className="text-gray-600 font-semibold">Total Withdrawal:</span>
-                            <span className="font-semibold">
+                        <div className="flex justify-between border-t border-emerald-50 pt-2 mt-2">
+                            <span className="text-emerald-900 font-bold">Total Withdrawal:</span>
+                            <span className="font-bold text-emerald-700">
                                 ₱{formatNumberWithCommas((amountNumber + calculateFee(amountNumber)).toFixed(2))}
                             </span>
                         </div>
 
                         <button
                             onClick={handleConfirmWithdrawal}
-                            className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition mt-auto cursor-pointer lg:text-sm xl:text-base">
+                            className="w-full bg-emerald-800 text-white py-2 rounded-lg font-semibold hover:bg-emerald-900 transition-colors shadow-lg shadow-emerald-900/20 mt-auto cursor-pointer lg:text-sm xl:text-base">
                             Confirm Withdrawal
                         </button>
 
                     </div>
+
                     {/* Transfer Info Details */}
                     {/* <div className="bg-white shadow-lg rounded-2xl p-5 space-y-4">
                         <h4 className="font-semibold">Transfer Information</h4>
@@ -616,8 +607,7 @@ const Withdrawal: React.FC = () => {
                     </div> */}
                 </div>
             </div>
-    </div>
-
+        </div>
     );
 };
 

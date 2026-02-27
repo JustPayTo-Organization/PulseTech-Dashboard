@@ -146,13 +146,13 @@ const Transactions: React.FC = () => {
     const getStatusClass = (status: string) => {
         switch (status) {
         case "SUCCESS":
-            return "bg-green-100 text-green-700 border-green-400";
+            return "bg-emerald-50 text-emerald-600 border-emerald-200";
         case "PENDING":
-            return "bg-blue-100 text-blue-700 border-blue-400";
+            return "bg-amber-50 text-amber-600 border-amber-200";
         case "FAILED":
-            return "bg-red-100 text-red-700 border-red-400";
+            return "bg-red-50 text-red-600 border-red-200";
         case "CLOSED":
-            return "bg-gray-100 text-gray-700 border-gray-400";
+            return "bg-stone-100 text-stone-600 border-stone-200";
         default:
             return "";
         }
@@ -225,7 +225,7 @@ const Transactions: React.FC = () => {
     }, [appliedStatus, appliedType, appliedDate, rowsPerPage]); //removed currentPage
 
     const Spinner = () => (
-        <span className="inline-block w-8 h-8 border-4 border-white/30 border-t-blue-500 rounded-full animate-spin mx-auto" />
+        <span className="inline-block w-8 h-8 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin mx-auto" />
     );
     
     useEffect(() => {
@@ -247,16 +247,16 @@ const Transactions: React.FC = () => {
 
     return (
         
-        <div className="md:mt-12 lg:mt-0 p-4 md:p-8 bg-slate-50 h-full flex flex-col overflow-hidden">
+        <div className="md:mt-12 lg:mt-0 p-4 md:p-8 bg-[#f8faf9] h-full flex flex-col overflow-hidden">
             {notification && (
                 <div className="fixed top-6 right-6 z-60 min-w-[320px] max-w-md animate-in fade-in slide-in-from-right-8 duration-300">
-                    <div className="bg-white border border-slate-200 rounded-xl shadow-2xl overflow-hidden flex items-stretch">
+                    <div className="bg-white border border-emerald-50 rounded-xl shadow-2xl shadow-emerald-500/10 overflow-hidden flex items-stretch">
                         {/* Success Accent Bar */}
                         <div className="w-1.5 bg-emerald-500" />
                         
                         <div className="p-4 flex flex-1 items-start gap-3">
                             {/* Success Icon */}
-                            <div className="shrink-0 mt-0.5 bg-emerald-100 text-emerald-600 p-1.5 rounded-full">
+                            <div className="shrink-0 mt-0.5 bg-emerald-50 text-emerald-600 p-1.5 rounded-full">
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
                                 </svg>
@@ -264,8 +264,8 @@ const Transactions: React.FC = () => {
 
                             {/* Content */}
                             <div className="flex-1 mr-4">
-                                <h3 className="text-sm font-bold text-slate-800">Success</h3>
-                                <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                                <h3 className="text-sm font-bold text-stone-800">Success</h3>
+                                <p className="text-xs text-stone-500 mt-0.5 leading-relaxed">
                                     {notification}
                                 </p>
                             </div>
@@ -273,7 +273,7 @@ const Transactions: React.FC = () => {
                             {/* Manual Close Button */}
                             <button 
                                 onClick={() => setNotification(null)}
-                                className="text-slate-400 hover:text-slate-600 transition-colors"
+                                className="text-stone-300 hover:text-emerald-500 transition-colors"
                             >
                                 <RxCross2 size={18} />
                             </button>
@@ -300,11 +300,11 @@ const Transactions: React.FC = () => {
             )}
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-            <h1 className="text-2xl md:text-3xl font-bold order-2 md:order-1 mt-12 md:mt-0 md:self-start">Transactions</h1>
+            <h1 className="text-2xl md:text-3xl font-extrabold order-2 md:order-1 mt-12 md:mt-0 md:self-start text-stone-700">Transactions</h1>
         </div>
 
         {/* Filters Section */}
-        <div className="bg-white p-3 md:p-4 rounded-lg shadow mb-4 md:mb-6">
+        <div className="bg-white p-3 md:p-4 rounded-2xl border border-emerald-50 shadow-sm mb-4 md:mb-6">
             <div className="flex flex-col xl:flex-row gap-3 md:gap-4">
                 
                 {/* Scrollable Filter Row on Mobile */}
@@ -319,14 +319,14 @@ const Transactions: React.FC = () => {
                             }
                         }}
                     >
-                        <span className="absolute inset-y-0 left-2.5 flex items-center text-gray-400">
+                        <span className="absolute inset-y-0 left-2.5 flex items-center text-emerald-400">
                             <CiCalendar size={18} />
                         </span>
                         <input
                             type="date"
                             value={dateInput}
                             onChange={(e) => setDateInput(e.target.value)}
-                            className="w-full border border-black/20 rounded-md pl-9 px-2 py-2 text-sm focus:ring-2 focus:ring-cyan-500/20 outline-none"
+                            className="w-full border border-stone-200 rounded-xl pl-9 px-2 py-2 text-sm focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-400 outline-none text-stone-600 transition-all"
                         />
                     </div>
 
@@ -335,7 +335,7 @@ const Transactions: React.FC = () => {
                         <select
                             value={statusInput}
                             onChange={(e) => setStatusInput(e.target.value)}
-                            className="w-full appearance-none border border-black/20 rounded-md px-3 py-2 pr-8 text-sm focus:ring-2 focus:ring-cyan-500/20 outline-none bg-white"
+                            className="w-full appearance-none border border-stone-200 rounded-xl px-3 py-2 pr-8 text-sm focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-400 outline-none bg-white text-stone-600 transition-all"
                         >
                             <option value="">All Status</option>
                             <option value="SUCCESS">Success</option>
@@ -343,7 +343,7 @@ const Transactions: React.FC = () => {
                             <option value="CLOSED">Closed</option>
                             <option value="FAILED">Failed</option>
                         </select>
-                        <span className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-400">
+                        <span className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-stone-300">
                             <HiChevronDown size={14} />
                         </span>
                     </div>
@@ -353,31 +353,31 @@ const Transactions: React.FC = () => {
                         <select
                             value={typeInput}
                             onChange={(e) => setTypeInput(e.target.value)}
-                            className="w-full appearance-none border border-black/20 rounded-md px-3 py-2 pr-8 text-sm focus:ring-2 focus:ring-cyan-500/20 outline-none bg-white"
+                            className="w-full appearance-none border border-stone-200 rounded-xl px-3 py-2 pr-8 text-sm focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-400 outline-none bg-white text-stone-600 transition-all"
                         >
                             <option value="">All Types</option>
                             <option value="PAYMENT">Cash in</option>
                             <option value="FUND-TRANSFER">Cash out</option>
                         </select>
-                        <span className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-400">
+                        <span className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-stone-300">
                             <HiChevronDown size={14} />
                         </span>
                     </div>
                 </div>
 
                 {/* Action Buttons Grid on Mobile */}
-                <div className="grid grid-cols-2 md:flex md:flex-1 xl:flex-1 gap-2 items-center border-t md:border-t-0 pt-3 md:pt-0 border-slate-100">
+                <div className="grid grid-cols-2 md:flex md:flex-1 xl:flex-1 gap-2 items-center border-t md:border-t-0 pt-3 md:pt-0 border-stone-100">
 
                     <button
                         onClick={handleApplyFilters}
-                        className="bg-cyan-500 text-white px-4 py-2 rounded-md hover:bg-cyan-600 transition font-semibold text-sm h-10 shadow-sm w-full md:flex-1"
+                        className="bg-teal-500 text-white px-4 py-2 rounded-xl hover:bg-emerald-600 transition-all font-bold text-sm h-10 shadow-lg shadow-emerald-500/20 active:scale-[0.98] w-full md:flex-1"
                     >
                         Filter
                     </button>
 
                     <button
                         onClick={handleClearFilters}
-                        className="text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition-colors px-4 py-2 rounded-md font-semibold text-sm h-10 flex items-center justify-center gap-1 shadow-sm w-full md:flex-1"
+                        className="text-stone-600 bg-white border border-stone-200 hover:bg-stone-50 transition-colors px-4 py-2 rounded-xl font-bold text-sm h-10 flex items-center justify-center gap-1 w-full md:flex-1"
                     >
                         <RxCross2 /> Clear
                     </button>
@@ -386,29 +386,29 @@ const Transactions: React.FC = () => {
                     <div ref={downloadDropdownRef} className="relative col-span-2 w-full md:flex-1">
                         <button
                             onClick={() => setDownloadMenuOpen(prev => !prev)}
-                            className="relative w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md shadow-sm transition font-semibold text-sm h-10 flex justify-center items-center"
+                            className="relative w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl shadow-lg shadow-emerald-600/20 transition-all font-bold text-sm h-10 flex justify-center items-center active:scale-[0.98]"
                         >
                             <span>Download</span>
                             <HiChevronDown size={16} className="absolute right-4 md:right-1 lg:right-4" />
                         </button>
 
                         {downloadMenuOpen && (
-                            <div className="absolute right-0 top-full mb-2 md:bottom-auto md:mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-xl z-50 py-1">
+                            <div className="absolute right-0 top-full mb-2 md:bottom-auto md:mt-2 w-full bg-white border border-stone-100 rounded-xl shadow-2xl z-50 py-1 overflow-hidden">
                                 <button
                                     disabled={isDownloading}
                                     onClick={() => { handleQueueDownload(); setDownloadMenuOpen(false); }}
-                                    className={`w-full text-left px-4 py-2.5 text-sm border-b border-slate-50 ${
+                                    className={`w-full text-left px-4 py-2.5 text-sm border-b border-stone-50 ${
                                         isDownloading
-                                            ? "opacity-50 cursor-not-allowed text-slate-400"
-                                            : "hover:bg-slate-50 text-slate-700"
-                                        }`}
+                                            ? "opacity-50 cursor-not-allowed text-stone-300"
+                                            : "hover:bg-emerald-50 hover:text-emerald-600 text-stone-600"
+                                    }`}
                                 >
                                     Queue Download
                                 </button>
                                 <button
                                     // onClick={() => navigate("/download-queue", { state: { downloadQueue } })}
                                     onClick={() => navigate("/download-queue")}
-                                    className="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 text-slate-700"
+                                    className="w-full text-left px-4 py-2.5 text-sm hover:bg-emerald-50 hover:text-emerald-600 text-stone-600 transition-colors"
                                 >
                                     View Queue
                                 </button>
@@ -420,16 +420,16 @@ const Transactions: React.FC = () => {
         </div>
 
         {/* Desktop Table View */}
-        <div className="hidden md:block overflow-auto bg-white rounded-lg shadow">
-            <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="hidden md:block overflow-auto bg-white/70 backdrop-blur-xl rounded-2xl border border-white shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+            <table className="min-w-full divide-y divide-stone-100">
+            <thead className="bg-stone-50/50">
                 <tr>
                 {["Transaction ID", "Reference", "Instapay Ref", "Amount", "Type", "Status", "Created", "Paid"].map((header) => (
-                    <th key={header} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">{header}</th>
+                    <th key={header} className="px-6 py-4 text-left text-[10px] font-bold text-stone-400 uppercase tracking-widest whitespace-nowrap">{header}</th>
                 ))}
                 </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200 text-xs">
+            <tbody className="bg-transparent divide-y divide-stone-50 text-xs">
             {loading ? 
             (
                 <tr>
@@ -440,33 +440,33 @@ const Transactions: React.FC = () => {
             )
             : _error ? (
                 <tr>
-                    <td colSpan={9} className="px-6 py-8 text-center text-red-500 font-semibold">
+                    <td colSpan={9} className="px-6 py-8 text-center text-red-500 font-bold">
                         Invalid Token, Please Log in Again
                     </td>
                 </tr>
             ) :
             currentTransactions.length > 0 ? (
                 currentTransactions.map((tx) => (
-                <tr key={tx.transaction_id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 text-gray-400 whitespace-nowrap">{tx.transaction_id ?? "N/A"}</td>
-                    <td className="px-6 py-4 font-medium">{tx.reference_id}</td>
-                    <td className="px-6 py-4">{tx.instapay_reference}</td>
-                    <td className={`px-6 py-4 font-semibold ${tx.type === "PAYMENT" ? "text-green-600" : "text-red-600"}`}>
+                <tr key={tx.transaction_id} className="hover:bg-emerald-50/30 transition-colors">
+                    <td className="px-6 py-4 text-stone-400 font-mono whitespace-nowrap">{tx.transaction_id ?? "N/A"}</td>
+                    <td className="px-6 py-4 font-bold text-stone-700">{tx.reference_id}</td>
+                    <td className="px-6 py-4 text-stone-600">{tx.instapay_reference}</td>
+                    <td className={`px-6 py-4 font-bold ${tx.type === "PAYMENT" ? "text-emerald-600" : "text-red-500"}`}>
                     {tx.type === "PAYMENT" ? "+" : "-"}₱{tx.amount.toLocaleString("en-PH")}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">{tx.type === "PAYMENT" ? "Cash in" : "Cash out"}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-stone-600">{tx.type === "PAYMENT" ? "Cash in" : "Cash out"}</td>
                     <td className="px-6 py-4">
                     <span className={`px-3 py-1 text-[10px] leading-5 font-bold rounded-full border ${getStatusClass(tx.status)}`}>
                         {tx.status.charAt(0) + tx.status.slice(1).toLowerCase()}
                     </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-400">{formatDateTime(tx.created_at)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-400">{formatDateTime(tx.paid_at)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.created_at)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.paid_at)}</td>
                 </tr>
                 ))
             ) : (
                 <tr>
-                <td colSpan={9} className="px-6 py-4 text-center text-gray-500">
+                <td colSpan={9} className="px-6 py-4 text-center text-stone-400">
                     No transactions found.
                 </td>
                 </tr>
@@ -483,15 +483,15 @@ const Transactions: React.FC = () => {
                 <Spinner />
             </div>
         ) : _error ? (
-            <div className="text-center py-8 text-red-500 font-semibold">
+            <div className="text-center py-8 text-red-500 font-bold">
                 Invalid Token, Please Log in Again
             </div>
         ) : currentTransactions.map((tx) => (
-            <div key={tx.transaction_id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+            <div key={tx.transaction_id} className="bg-white/80 backdrop-blur-md p-4 rounded-2xl border border-white shadow-sm">
                 <div className="flex justify-between items-start mb-3">
                     <div>
-                    <p className="text-[10px] text-gray-400 font-mono uppercase tracking-tighter">{tx.transaction_id}</p>
-                    <p className="font-bold text-slate-800">{tx.instapay_reference}</p>
+                    <p className="text-[10px] text-stone-400 font-mono uppercase tracking-tighter">{tx.transaction_id}</p>
+                    <p className="font-bold text-stone-800">{tx.instapay_reference}</p>
                     </div>
 
                     {/* Right side: status badge + triple-dot */}
@@ -502,7 +502,7 @@ const Transactions: React.FC = () => {
 
                     <button
                         onClick={() => openModal(tx)}
-                        className="p-1 text-gray-500 hover:text-gray-700"
+                        className="p-1 text-stone-300 hover:text-emerald-500 transition-colors"
                         aria-label="View Details"
                     >
                         ⋮
@@ -511,11 +511,11 @@ const Transactions: React.FC = () => {
                 </div>
 
                 <div className="flex justify-between items-end">
-                    <div className="text-xs text-gray-500">
-                    <p>{tx.type === "PAYMENT" ? "Cash in" : "Cash out"}</p>
+                    <div className="text-xs text-stone-400">
+                    <p className="font-medium text-stone-500">{tx.type === "PAYMENT" ? "Cash in" : "Cash out"}</p>
                     <p className="text-[10px]">{new Date(tx.created_at).toLocaleString()}</p>
                     </div>
-                    <p className={`text-lg font-bold ${tx.type === "PAYMENT" ? "text-green-600" : "text-red-600"}`}>
+                    <p className={`text-lg font-bold ${tx.type === "PAYMENT" ? "text-emerald-600" : "text-red-500"}`}>
                     {tx.type === "PAYMENT" ? "+" : "-"}₱{tx.amount.toLocaleString("en-PH")}
                     </p>
                 </div>
@@ -524,33 +524,33 @@ const Transactions: React.FC = () => {
         </div>
 
         {modalOpen && selectedTransaction && (
-        <div className="fixed inset-0 z-100 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-            <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-stone-900/60 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-[2rem] border border-white w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                 
                 {/* Modal Header */}
-                <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <div className="px-6 py-5 border-b border-stone-50 flex justify-between items-center bg-stone-50/30">
                     <div>
-                        <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider">Transaction Details</h2>
+                        <h2 className="text-xs font-bold text-stone-400 uppercase tracking-widest">Transaction Details</h2>
                         {/* OPTION 1: Sub-header (Uncomment if you want it at the top) */}
                         {/* <p className="text-[10px] text-slate-400 font-mono mt-0.5">{selectedTransaction.id}</p> */}
                     </div>
                     <button
                         onClick={closeModal}
-                        className="p-1.5 rounded-full hover:bg-slate-200 text-slate-500 transition-colors"
+                        className="p-2 rounded-xl hover:bg-stone-100 text-stone-300 hover:text-emerald-500 transition-all"
                     >
                         <RxCross2 size={20} />
                     </button>
                 </div>
 
-                <div className="p-6">
+                <div className="p-8">
                     {/* Primary Info: Amount & Status */}
                     <div className="text-center mb-8">
-                        <p className="text-xs font-medium text-slate-400 uppercase mb-1">Total Amount</p>
-                        <div className={`text-3xl font-bold ${selectedTransaction.type === "PAYMENT" ? "text-emerald-600" : "text-slate-900"}`}>
+                        <p className="text-[10px] font-bold text-stone-300 uppercase tracking-widest mb-1">Total Amount</p>
+                        <div className={`text-4xl font-extrabold tracking-tight ${selectedTransaction.type === "PAYMENT" ? "text-emerald-500" : "text-stone-700"}`}>
                             {selectedTransaction.type === "PAYMENT" ? "+" : "-"}₱{selectedTransaction.amount.toLocaleString()}
                         </div>
-                        <div className="mt-3 flex justify-center">
-                            <span className={`px-4 py-1 rounded-full text-[11px] font-bold border ${getStatusClass(selectedTransaction.status)}`}>
+                        <div className="mt-4 flex justify-center">
+                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold border ${getStatusClass(selectedTransaction.status)}`}>
                                 {selectedTransaction.status}
                             </span>
                         </div>
@@ -565,9 +565,9 @@ const Transactions: React.FC = () => {
                             { label: "Created At", value: formatDateTime(selectedTransaction.created_at) },
                             { label: "Paid At", value: formatDateTime(selectedTransaction.paid_at) },
                         ].map((item, idx) => (
-                            <div key={idx} className="flex justify-between items-start border-b border-slate-50 pb-2 last:border-0">
-                                <span className="text-xs font-medium text-slate-400">{item.label}</span>
-                                <span className="text-xs font-semibold text-slate-700 text-right max-w-50 break-all">
+                            <div key={idx} className="flex justify-between items-start border-b border-stone-50 pb-3 last:border-0">
+                                <span className="text-[11px] font-bold text-stone-300 uppercase tracking-wider">{item.label}</span>
+                                <span className="text-xs font-bold text-stone-600 text-right max-w-50 break-all">
                                     {item.value}
                                 </span>
                             </div>
@@ -575,10 +575,10 @@ const Transactions: React.FC = () => {
                     </div>
 
                     {/* OPTION 2: Technical Metadata Section (Recommended) */}
-                    <div className="mt-6 pt-4 border-t border-slate-100">
-                        <div className="flex flex-col items-center gap-1">
-                            <span className="text-[10px] font-medium text-slate-300 uppercase tracking-widest">Transaction ID</span>
-                            <span className="text-[10px] font-mono text-slate-400 bg-slate-50 px-2 py-1 rounded select-all">
+                    <div className="mt-8 pt-5 border-t border-stone-50">
+                        <div className="flex flex-col items-center gap-1.5">
+                            <span className="text-[9px] font-bold text-stone-300 uppercase tracking-[0.2em]">System Identifier</span>
+                            <span className="text-[10px] font-mono text-stone-400 bg-stone-50 px-3 py-1.5 rounded-lg select-all border border-stone-100">
                                 {selectedTransaction.transaction_id}
                             </span>
                         </div>
@@ -589,32 +589,32 @@ const Transactions: React.FC = () => {
 )}
 
             {/* Pagination */}
-            <div className="flex flex-col md:flex-row justify-between items-center mt-6 gap-4 border-b border-black/30 pb-4 pt-4">
-                <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-500">Rows:</span>
+            <div className="flex flex-col md:flex-row justify-between items-center mt-6 gap-4 border-t border-stone-100 pb-4 pt-6">
+                <div className="flex items-center gap-3">
+                    <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Rows:</span>
                     <select
                         value={rowsPerPage}
                         onChange={e => { setRowsPerPage(Number(e.target.value)); setCurrentPage(1); }}
-                        className="border border-black/30 rounded px-2 py-1 text-xs"
+                        className="border border-stone-200 rounded-lg px-3 py-1 text-xs text-stone-600 bg-white focus:outline-none focus:border-emerald-400 transition-all font-bold"
                     >
                         {[25,50,100].map(n => <option key={n} value={n}>{n}</option>)}
                     </select>
                 </div>
 
-                <div className="flex items-center gap-3">
-                    <div className="flex gap-1">
-                        <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} className="p-2 border border-black/30 rounded-lg disabled:opacity-30 bg-white shadow-sm"><MdKeyboardDoubleArrowLeft size={18}/></button>
-                        <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="p-2 border border-black/30 rounded-lg disabled:opacity-30 bg-white shadow-sm"><MdKeyboardArrowLeft size={18}/></button>
+                <div className="flex items-center gap-6">
+                    <div className="flex gap-1.5">
+                        <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1} className="p-2 border border-stone-200 rounded-xl disabled:opacity-30 bg-white text-stone-400 hover:text-emerald-500 hover:border-emerald-200 transition-all"><MdKeyboardDoubleArrowLeft size={18}/></button>
+                        <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="p-2 border border-stone-200 rounded-xl disabled:opacity-30 bg-white text-stone-400 hover:text-emerald-500 hover:border-emerald-200 transition-all"><MdKeyboardArrowLeft size={18}/></button>
                     </div>
                     
-                    <div className="text-xs font-medium text-gray-600 min-w-20 text-center">
+                    <div className="text-[10px] font-bold text-stone-400 uppercase tracking-[0.2em] min-w-24 text-center">
                         {totalItems === 0 ? "0-0 of 0" :
-                            `${(currentPage - 1) * rowsPerPage + 1}-${Math.min(currentPage * rowsPerPage, totalItems)} of ${totalItems}`}
+                            `${(currentPage - 1) * rowsPerPage + 1}-${Math.min(currentPage * rowsPerPage, totalItems)} / ${totalItems}`}
                     </div>
 
-                    <div className="flex gap-1">
-                        <button onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} className="p-2 border border-black/30 rounded-lg disabled:opacity-30 bg-white shadow-sm"><MdKeyboardArrowRight size={18}/></button>
-                        <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} className="p-2 border border-black/30 rounded-lg disabled:opacity-30 bg-white shadow-sm"><MdKeyboardDoubleArrowRight size={18}/></button>
+                    <div className="flex gap-1.5">
+                        <button onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} className="p-2 border border-stone-200 rounded-xl disabled:opacity-30 bg-white text-stone-400 hover:text-emerald-500 hover:border-emerald-200 transition-all"><MdKeyboardArrowRight size={18}/></button>
+                        <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} className="p-2 border border-stone-200 rounded-xl disabled:opacity-30 bg-white text-stone-400 hover:text-emerald-500 hover:border-emerald-200 transition-all"><MdKeyboardDoubleArrowRight size={18}/></button>
                     </div>
                 </div>
             </div>
