@@ -59,25 +59,28 @@ const ChangePass = () => {
     };
 
     return (
-        <div className="relative min-h-screen w-full flex items-center justify-center bg-slate-50 overflow-hidden font-sans">
+        // Changed bg-slate-50 to bg-stone-50
+        <div className="relative min-h-screen w-full flex items-center justify-center bg-stone-50 overflow-hidden font-sans">
             
-            {/* --- Background Animated Blobs --- */}
-            <div className="absolute top-[-10%] left-[-10%] w-72 h-72 bg-cyan-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
-            <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+            {/* --- Background Animated Blobs (Now Forest & Moss themed) --- */}
+            <div className="absolute top-[-10%] left-[-10%] w-72 h-72 bg-emerald-100/50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
+            <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-stone-200 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
 
             {/* --- Card Container --- */}
             <div className="relative z-10 w-full max-w-100 px-6 animate-fade-in">
-                <div className="bg-white/80 backdrop-blur-xl border border-white/20 p-8 rounded-[2.5rem] shadow-2xl shadow-blue-100/50">
+                {/* Updated shadow to stone-900/10 for a more organic depth */}
+                <div className="bg-white/80 backdrop-blur-xl border border-stone-200/50 p-8 rounded-[2.5rem] shadow-2xl shadow-stone-900/10">
                 
                 {/* Header */}
                 <div className="mb-8 text-center">
-                    <h1 className="text-3xl font-bold text-slate-800 mb-2">Pulse<span className='text-blue-600'>Tech</span></h1>
-                    <p className="text-slate-500 text-sm">Secure your account with a new password</p>
+                    {/* Brand color changed to Emerald 900 */}
+                    <h1 className="text-3xl font-black text-stone-800 mb-2 tracking-tight">Pulse<span className='text-emerald-800'>Tech</span></h1>
+                    <p className="text-stone-500 text-sm font-medium">Secure your account with a new password</p>
                 </div>
 
-                {/* Error Message */}
+                {/* Error Message - Muted Terracotta/Red */}
                 {error && (
-                    <div className="bg-red-50 text-red-500 text-xs py-2 px-3 rounded-lg text-center font-medium animate-shake">
+                    <div className="bg-red-50 text-red-800 text-xs py-2 px-3 rounded-lg text-center font-bold border border-red-100 animate-shake mb-4">
                         {error}
                     </div>
                 )}
@@ -86,12 +89,13 @@ const ChangePass = () => {
                     
                     {/* Current Password Field */}
                     <div className="space-y-1">
-                        <label className="text-xs font-semibold text-slate-500 ml-1 uppercase tracking-wider">Current Password</label>
+                        <label className="text-[10px] font-black text-stone-400 ml-1 uppercase tracking-[0.15em]">Current Password</label>
                         <div className="relative group">
-                            <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+                            {/* Focus colors changed to Emerald */}
+                            <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-emerald-800 transition-colors" />
                             <input 
                                 type={showCurrent ? "text" : "password"}
-                                className="w-full bg-slate-100/50 border-none rounded-2xl py-4 pl-12 pr-12 text-slate-700 focus:ring-2 focus:ring-blue-600/20 transition-all outline-none"
+                                className="w-full bg-stone-100/50 border border-stone-100 rounded-2xl py-4 pl-12 pr-12 text-stone-700 focus:ring-4 focus:ring-emerald-50 focus:border-emerald-800 transition-all outline-none font-medium"
                                 placeholder="••••••••"
                                 value={formData.currentPassword}
                                 onChange={(e) => setFormData({...formData, currentPassword: e.target.value})}
@@ -100,7 +104,7 @@ const ChangePass = () => {
                             <button 
                                 type="button" 
                                 onClick={() => setShowCurrent(!showCurrent)}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
                             >
                                 {showCurrent ? <FiEyeOff size={18} /> : <FiEye size={18} />}
                             </button>
@@ -109,12 +113,12 @@ const ChangePass = () => {
 
                     {/* New Password Field */}
                     <div className="space-y-1">
-                        <label className="text-xs font-semibold text-slate-500 ml-1 uppercase tracking-wider">New Password</label>
+                        <label className="text-[10px] font-black text-stone-400 ml-1 uppercase tracking-[0.15em]">New Password</label>
                         <div className="relative group">
-                            <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+                            <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-emerald-800 transition-colors" />
                             <input 
                                 type={showNew ? "text" : "password"}
-                                className="w-full bg-slate-100/50 border-none rounded-2xl py-4 pl-12 pr-12 text-slate-700 focus:ring-2 focus:ring-blue-600/20 transition-all outline-none"
+                                className="w-full bg-stone-100/50 border border-stone-100 rounded-2xl py-4 pl-12 pr-12 text-stone-700 focus:ring-4 focus:ring-emerald-50 focus:border-emerald-800 transition-all outline-none font-medium"
                                 placeholder="••••••••"
                                 value={formData.newPassword}
                                 onChange={(e) => setFormData({...formData, newPassword: e.target.value})}
@@ -123,17 +127,17 @@ const ChangePass = () => {
                             <button 
                                 type="button" 
                                 onClick={() => setShowNew(!showNew)}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
                             >
                                 {showNew ? <FiEyeOff size={18} /> : <FiEye size={18} />}
                             </button>
                         </div>
                     </div>
 
-                    {/* Submit Button */}
+                    {/* Submit Button - Now Emerald 900 */}
                     <button 
                         type="submit"
-                        className="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-200 transition-all duration-200 mt-2"
+                        className="w-full bg-emerald-900 hover:bg-emerald-950 active:scale-[0.98] text-stone-50 font-black py-4 rounded-2xl shadow-lg shadow-emerald-900/20 transition-all duration-200 mt-2 tracking-wide"
                     >
                         Update Password
                     </button>
@@ -141,7 +145,7 @@ const ChangePass = () => {
 
                 {/* Footer Link */}
                 <div className="mt-8 text-center">
-                    <Link to="/landing" className="inline-flex items-center text-sm text-slate-400 hover:text-blue-600 transition-colors font-medium group">
+                    <Link to="/landing" className="inline-flex items-center text-sm text-stone-400 hover:text-emerald-900 transition-colors font-black group tracking-tight">
                         <FiArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform" />Back
                     </Link>
                 </div>
@@ -151,19 +155,20 @@ const ChangePass = () => {
             {/* --- Success Modal --- */}
             {showSuccessModal && (
                 <div className="fixed inset-0 z-100 flex items-center justify-center px-4 overflow-hidden">
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-fade-in"></div>
+                    {/* Overlay - Darker Stone/Forest tint */}
+                    <div className="absolute inset-0 bg-stone-900/60 backdrop-blur-sm animate-fade-in"></div>
                     
                     {/* Modal Content */}
-                    <div className="relative bg-white rounded-[2.5rem] p-8 w-full max-w-85 shadow-2xl animate-pop-in text-center">
+                    <div className="relative bg-white rounded-[2.5rem] p-8 w-full max-w-85 shadow-2xl animate-pop-in text-center border border-stone-200">
                         <div className="flex justify-center mb-4">
-                            <FiCheckCircle className="text-blue-600" size={64} />
+                            {/* Checkmark icon in Forest Green */}
+                            <FiCheckCircle className="text-emerald-700" size={64} />
                         </div>
-                        <h2 className="text-2xl font-bold text-slate-800 mb-2">Success!</h2>
-                        <p className="text-slate-500 mb-8">Password changed successfully.</p>
+                        <h2 className="text-2xl font-black text-stone-800 mb-2 tracking-tight">Success!</h2>
+                        <p className="text-stone-500 mb-8 font-medium">Password changed successfully.</p>
                         <button 
                             onClick={handleModalClose}
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-200 transition-all active:scale-[0.95]"
+                            className="w-full bg-emerald-900 hover:bg-emerald-950 text-stone-50 font-black py-4 rounded-2xl shadow-lg shadow-emerald-900/20 transition-all active:scale-[0.95]"
                         >
                             OK
                         </button>

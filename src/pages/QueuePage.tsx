@@ -148,10 +148,14 @@ const DownloadQueueUI: React.FC = () => {
   // --- UI Helpers ---
   const StatusBadge = ({ status }: { status: JobStatus }) => {
     const styles = {
-      queued: 'bg-blue-50 text-blue-700 border-blue-100',
-      ready: 'bg-green-50 text-green-700 border-green-100',
-      failed: 'bg-red-50 text-red-700 border-red-100',
-      downloading: 'bg-gray-50 text-gray-700 border-gray-100',
+      // Changed Blue to Earthy Amber/Brown
+      queued: 'bg-orange-50 text-orange-800 border-orange-100',
+      // Moss Green
+      ready: 'bg-emerald-50 text-emerald-800 border-emerald-100',
+      // Muted Terracotta
+      failed: 'bg-red-50 text-red-800 border-red-100',
+      // Stone Gray
+      downloading: 'bg-stone-100 text-stone-700 border-stone-200',
     };
     const icons = {
       queued: <Clock size={14} className="mr-1" />,
@@ -160,7 +164,7 @@ const DownloadQueueUI: React.FC = () => {
       downloading: <CircleArrowDown size={14} className="mr-1" />,
     };
     return (
-      <span className={`flex items-center w-fit px-2.5 py-0.5 rounded-full text-xs font-medium border ${styles[status]}`}>
+      <span className={`flex items-center w-fit px-2.5 py-0.5 rounded-full text-[10px] font-black border shadow-sm ${styles[status]}`}>
         {icons[status]}
         {status.toUpperCase()}
       </span>
@@ -168,14 +172,15 @@ const DownloadQueueUI: React.FC = () => {
   };
 
   return (
-    <div className="mt-12 md:mt-0 p-4 md:p-8 bg-gray-50 min-h-screen font-sans text-slate-900">
+    // Background Stone-50 for warmth
+    <div className="mt-12 md:mt-0 p-4 md:p-8 bg-stone-50 min-h-screen font-sans text-stone-900">
       <div className="max-w-6xl mx-auto">
 
         {/* Back Navigation */}
         <div className="mb-6">
           <button
             onClick={() => window.location.href = '/transactions'}
-            className="flex items-center text-slate-500 hover:text-slate-800 transition-colors text-sm font-medium group"
+            className="flex items-center text-stone-500 hover:text-emerald-900 transition-colors text-sm font-bold group"
           >
             <ChevronLeft size={20} className="mr-1 group-hover:-translate-x-1 transition-transform" />
             Back to Transactions
@@ -184,11 +189,11 @@ const DownloadQueueUI: React.FC = () => {
 
         {/* Header & Bulk Actions */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-          <h1 className="text-2xl font-bold text-slate-800">Download Queue</h1>
+          <h1 className="text-3xl font-black text-emerald-950 tracking-tight">Download Queue</h1>
           <div className="flex gap-2">
             <button
               onClick={clearCompleted}
-              className="flex items-center px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+              className="flex items-center px-4 py-2 text-sm font-bold text-stone-600 bg-white border border-stone-200 rounded-lg hover:bg-stone-50 transition-all shadow-sm active:scale-95"
             >
               <Trash2 size={16} className="mr-2" />
               Clear Finished
@@ -196,7 +201,7 @@ const DownloadQueueUI: React.FC = () => {
             <button
               onClick={downloadAllReady}
               disabled={isDownloadingAll || !jobs.some(j => j.status === 'ready')}
-              className="flex items-center px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+              className="flex items-center px-4 py-2 text-sm font-bold text-stone-50 bg-emerald-900 rounded-lg hover:bg-emerald-950 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-md active:scale-95"
             >
               <Download size={16} className="mr-2" />
               {isDownloadingAll ? 'Processing...' : 'Download Ready'}
@@ -206,59 +211,61 @@ const DownloadQueueUI: React.FC = () => {
 
         {/* Filter Bar */}
         <div className="mb-6 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={18} />
           <input
             type="text"
             placeholder="Search files..."
-            className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-sm"
+            className="w-full pl-10 pr-4 py-3 bg-white border border-stone-200 rounded-xl focus:ring-4 focus:ring-emerald-50 focus:border-emerald-800 outline-none transition-all shadow-sm text-stone-700 font-medium"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
         {/* Desktop Table View */}
-        <div className="hidden md:block bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="hidden md:block bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
           <table className="w-full text-left border-collapse">
-            <thead className="bg-slate-50 border-b border-slate-200">
+            <thead className="bg-stone-50 border-b border-stone-100">
               <tr>
-                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">Filename</th>
-                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">Status</th>
-                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">Transactions</th>
-                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">Date Added</th>
-                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase text-right">Actions</th>
+                <th className="px-6 py-4 text-[11px] font-black text-stone-500 uppercase tracking-widest">Filename</th>
+                <th className="px-6 py-4 text-[11px] font-black text-stone-500 uppercase tracking-widest">Status</th>
+                <th className="px-6 py-4 text-[11px] font-black text-stone-500 uppercase tracking-widest">Transactions</th>
+                <th className="px-6 py-4 text-[11px] font-black text-stone-500 uppercase tracking-widest">Date Added</th>
+                <th className="px-6 py-4 text-[11px] font-black text-stone-500 uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-stone-50">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="p-12 text-center text-slate-400">Loading queue...</td>
+                  <td colSpan={5} className="p-12 text-center">
+                      <span className="inline-block w-8 h-8 border-4 border-stone-200 border-t-emerald-800 rounded-full animate-spin" />
+                  </td>
                 </tr>
               ) : filteredJobs.length > 0 ? (
                 filteredJobs.map(job => (
-                  <tr key={job.id} className="hover:bg-slate-50 transition-colors group">
+                  <tr key={job.id} className="hover:bg-stone-50/50 transition-colors group">
                     <td className="px-6 py-4">
                       <div className="flex items-center">
-                        <FileText className="text-slate-400 mr-3" size={20} />
-                        <span className="font-medium text-slate-700">{job.name}</span>
+                        <FileText className="text-stone-400 mr-3" size={20} />
+                        <span className="font-bold text-stone-700">{job.name}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <StatusBadge status={job.status} />
                     </td>
-                    <td className="px-6 py-4 text-slate-600 text-sm">{job.transactions.length} items</td>
-                    <td className="px-6 py-4 text-slate-500 text-sm">{job.createdAt}</td>
+                    <td className="px-6 py-4 text-stone-500 font-bold text-sm">{job.transactions.length} items</td>
+                    <td className="px-6 py-4 text-stone-400 font-medium text-sm">{job.createdAt}</td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => handleDownloadWithProgress(job)}
                           disabled={job.status !== 'ready'}
-                          className={`p-2 rounded-lg transition-colors ${job.status === 'ready' ? 'text-emerald-600 hover:bg-emerald-50' : 'text-slate-300 cursor-not-allowed'}`}
+                          className={`p-2 rounded-lg transition-all ${job.status === 'ready' ? 'text-emerald-700 hover:bg-emerald-50 active:scale-90' : 'text-stone-200 cursor-not-allowed'}`}
                         >
                           <Download size={18} />
                         </button>
                         <button
                           onClick={() => removeJob(job.id)}
-                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-2 text-stone-400 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all active:scale-90"
                         >
                           <Trash2 size={18} />
                         </button>
@@ -268,7 +275,7 @@ const DownloadQueueUI: React.FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="p-12 text-center text-slate-400">No downloads in queue.</td>
+                  <td colSpan={5} className="p-12 text-center text-stone-400 font-medium font-bold">No downloads in queue.</td>
                 </tr>
               )}
             </tbody>
@@ -278,36 +285,38 @@ const DownloadQueueUI: React.FC = () => {
         {/* Mobile Card View */}
         <div className="md:hidden space-y-4">
           {loading ? (
-            <div className="p-12 text-center text-slate-400">Loading queue...</div>
+            <div className="p-12 text-center">
+                <span className="inline-block w-8 h-8 border-4 border-stone-200 border-t-emerald-800 rounded-full animate-spin" />
+            </div>
           ) : filteredJobs.length === 0 ? (
-            <div className="p-12 text-center text-slate-400">No downloads in queue.</div>
+            <div className="p-12 text-center text-stone-400 font-bold">No downloads in queue.</div>
           ) : filteredJobs.map(job => (
-            <div key={job.id} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div key={job.id} className="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm active:bg-stone-50 transition-colors">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center">
-                  <div className="p-2 bg-slate-100 rounded-lg mr-3">
-                    <FileText size={20} className="text-slate-600" />
+                  <div className="p-2 bg-stone-50 border border-stone-100 rounded-xl mr-3">
+                    <FileText size={20} className="text-stone-600" />
                   </div>
                   <div>
-                    <h3 className="text-xs sm:text-base font-bold text-slate-800 leading-tight">{job.name}</h3>
-                    <p className="text-xs text-slate-500">{job.createdAt}</p>
+                    <h3 className="text-sm font-black text-stone-800 leading-tight pr-2">{job.name}</h3>
+                    <p className="text-[10px] text-stone-400 font-medium mt-1">{job.createdAt}</p>
                   </div>
                 </div>
                 <StatusBadge status={job.status} />
               </div>
-              <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                <span className="text-sm text-slate-500">{job.transactions.length} Transactions</span>
-                <div className="flex gap-3">
+              <div className="flex items-center justify-between pt-4 border-t border-stone-50">
+                <span className="text-xs font-bold text-stone-500">{job.transactions.length} Transactions</span>
+                <div className="flex gap-4">
                   <button
                     onClick={() => removeJob(job.id)}
-                    className="flex items-center text-sm font-medium text-slate-500"
+                    className="flex items-center text-xs font-black text-stone-400 hover:text-red-700"
                   >
                     Remove
                   </button>
                   <button
                     onClick={() => handleDownloadWithProgress(job)}
                     disabled={job.status !== 'ready'}
-                    className="flex items-center text-sm font-bold text-emerald-600 disabled:opacity-30"
+                    className="flex items-center text-xs font-black text-emerald-800 disabled:opacity-30"
                   >
                     Download
                   </button>

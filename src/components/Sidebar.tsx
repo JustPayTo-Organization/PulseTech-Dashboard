@@ -15,7 +15,6 @@ export default function Sidebar() {
     const [_error, setError] = useState<string | undefined>(undefined);
     const [_loading, setLoading] = useState(false);
     
-    
     const navItems = [
         { name: "Overview", path: "/landing", icon: LuBlocks },
         { name: "Transactions", path: "/transactions", icon: PiHandWithdrawBold },
@@ -24,54 +23,29 @@ export default function Sidebar() {
 
     useEffect(() => {
         const fetchClientName = async () => {
-        try {
-            const accessToken = localStorage.getItem("accessToken");
-            const res = await fetch(`${API_URL}/dashboard/user`, {
-                method: "GET", 
-                headers: {
-                    "Content-Type": "application/json", // common header
-                    "Authorization": `Bearer ${accessToken}`,   // if your API uses bearer token
-                },
-            });
-            if (!res.ok) throw new Error("Network response was not ok");
-            const json = await res.json();
-            setClientName(json.name);
-        } catch (err: unknown) {
-            if (err instanceof Error) setError(err.message);
-            else setError("Unknown error");
-        } finally {
-            setLoading(false);
-        }
+            try {
+                const accessToken = localStorage.getItem("accessToken");
+                const res = await fetch(`${API_URL}/dashboard/user`, {
+                    method: "GET", 
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${accessToken}`,
+                    },
+                });
+                if (!res.ok) throw new Error("Network response was not ok");
+                const json = await res.json();
+                setClientName(json.name);
+            } catch (err: unknown) {
+                if (err instanceof Error) setError(err.message);
+                else setError("Unknown error");
+            } finally {
+                setLoading(false);
+            }
         };
-
         fetchClientName();
     }, []);
 
-    // const client = JSON.parse(
-    //     localStorage.getItem("client") || "{}"
-    // );
-
-    // const handleSignOut = async () => {
-    //     try {
-    //         const res = await fetch(`${API_URL}/auth/logout`, {
-    //             method: "POST",
-    //             credentials: "include", // important: sends cookies to the server
-    //         });
-
-    //         if (!res.ok) throw new Error("Logout failed");
-
-    //         navigate("/login"); // redirect after successful logout
-    //         localStorage.removeItem('accessToken');
-
-    //     } catch (err) {
-    //         console.error(err);
-    //         alert("Logout failed. Please try again.");
-    //     }
-    // };
-
-    const [_accessToken, setAccessToken] = useState(
-        () => localStorage.getItem("accessToken")
-    );
+    const [_accessToken, setAccessToken] = useState(() => localStorage.getItem("accessToken"));
 
     const handleSignOut = async () => {
         localStorage.removeItem('accessToken');
@@ -79,138 +53,122 @@ export default function Sidebar() {
         navigate("/login", { replace: true });
     };  
 
-
-        // const clientName = client.displayName || "Unknown Client";
-       const nameParts = clientName ? clientName.trim().split(" ") : [];
-        const initials =
-        nameParts.length >= 2
+    const nameParts = clientName ? clientName.trim().split(" ") : [];
+    const initials = nameParts.length >= 2
             ? `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`
-            : nameParts.length === 1
-            ? nameParts[0][0]
-            : "?"; // fallback if no name yet
-        const clientInitials = initials.toUpperCase();
+            : nameParts.length === 1 ? nameParts[0][0] : "?";
+    const clientInitials = initials.toUpperCase();
 
-        const [showChangePass, setShowChangePass] = useState(false);
-        const clientRef = useRef<HTMLDivElement>(null);
+    const [showChangePass, setShowChangePass] = useState(false);
+    const clientRef = useRef<HTMLDivElement>(null);
 
-        useEffect(() => {
-            const handleClickOutside = (event: MouseEvent) => {
-            if (
-                clientRef.current &&
-                !clientRef.current.contains(event.target as Node)
-            ) {
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (clientRef.current && !clientRef.current.contains(event.target as Node)) {
                 setShowChangePass(false);
             }
-            };
-
-            document.addEventListener("click", handleClickOutside);
-            return () => {
-                document.removeEventListener("click", handleClickOutside);
-            };
+        };
+        document.addEventListener("click", handleClickOutside);
+        return () => document.removeEventListener("click", handleClickOutside);
     }, []);
 
-    const handleToggleChangePass = () => {
-        setShowChangePass((prev) => !prev);
-    };
-    
-    const handleChangePass = () => {
-        navigate("/changepass");
-    }
+    const handleToggleChangePass = () => setShowChangePass((prev) => !prev);
+    const handleChangePass = () => navigate("/changepass");
 
     return (
         <>
-            {/* Hamburger Button on small screens */}
+            {/* Hamburger Button: Matched to Stone Theme */}
             <div className="lg:hidden fixed top-4 left-4 z-50">
                 <button
                     onClick={() => setMobileOpen(!mobileOpen)}
-                    className="text-gray-700 bg-white p-2 rounded-lg shadow"
+                    className="text-stone-600 bg-white/80 backdrop-blur-md p-2.5 rounded-xl shadow-md border border-stone-200 active:scale-90 transition-transform"
                 >
                     {mobileOpen ? <IoClose size={24} /> : <HiOutlineMenu size={24} />}
                 </button>
             </div>
 
-            {/* Sidebar */}
+            {/* Sidebar: Warm Stone Glassmorphism */}
             <div
                 className={`
-                    h-full w-64 bg-white text-white flex flex-col p-4
+                    h-full w-64 bg-stone-50/80 backdrop-blur-2xl flex flex-col p-4
                     fixed top-0 left-0 z-40 lg:relative lg:translate-x-0
-                    transition-transform duration-300 ease-in-out
+                    transition-transform duration-300 ease-in-out border-r border-stone-200
                     ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
                 `}
             >
-                {/* Logo */}
-                <div className="flex items-center justify-center gap-3 mb-6">
-                    <img
-                        src="/pulsetechlogov2.png"
-                        alt="PulseTech Logov2"
-                        className="w-20 h-20 object-contain"
-                    />
+                {/* Decorative Background Blur (Mossy accent) */}
+                <div className="absolute top-[-5%] left-[-10%] w-32 h-32 rounded-full bg-emerald-100/30 blur-3xl -z-10" />
+                
+                {/* Logo Section */}
+                <div className="flex flex-col items-center gap-2 mb-10 mt-6">
+                    <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-2.5">
+                        <img
+                            src="/pulselogobgremoved.png"
+                            alt="PulseTech"
+                            className="w-14 h-14 object-contain"
+                        />
+                    </div>
+                    <h1 className="text-xl font-black text-stone-800 tracking-tight mt-2">
+                    </h1>
                 </div>
 
-                {/* Navigation */}
-                <nav className="flex flex-col gap-4 flex-1">
+                {/* Navigation: Bold Forest Style */}
+                <nav className="flex flex-col gap-2 flex-1">
                     {navItems.map((item) => {
                         const Icon = item.icon;
+                        const isActive = item.path === window.location.pathname || (item.path === "/landing" && window.location.pathname === "/");
                         return (
                             <NavLink
                                 key={item.path}
                                 to={item.path}
-                                className={({ isActive }) =>
-                                    `flex items-center gap-3 px-4 py-2 rounded-lg transition ${
-                                        isActive || (item.path === "/landing" && window.location.pathname === "/")
-                                            ? "bg-sky-200 font-semibold text-black"
-                                            : "text-gray-700 hover:bg-sky-50"
-                                    }`
-                                }
-                                onClick={() => setMobileOpen(false)} // close sidebar on mobile click
+                                className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 ${
+                                    isActive
+                                        ? "bg-emerald-900 text-stone-50 shadow-lg shadow-emerald-900/20 font-black"
+                                        : "text-stone-500 hover:bg-stone-100 hover:text-emerald-900 font-bold"
+                                }`}
+                                onClick={() => setMobileOpen(false)}
                             >
-                                <Icon
-                                    className={`text-2xl transition-colors rounded ${
-                                        item.path === window.location.pathname
-                                            ? "text-white bg-blue-400 p-1"
-                                            : "bg-gray-100 text-gray-400 group-hover:text-sky-500"
-                                    }`}
-                                />
-                                <span>{item.name}</span>
+                                <Icon className={`text-xl ${isActive ? "text-stone-50" : "text-stone-400"}`} />
+                                <span className="text-xs uppercase tracking-widest">{item.name}</span>
                             </NavLink>
                         );
                     })}
                 </nav>
 
-                {/* Client Info */}
-
+                {/* Change Password Popover (Earthy Tone) */}
                 {showChangePass && (
                     <button
                         onClick={handleChangePass}
-                        className="bg-white text-gray-800 px-4 py-3 rounded-xl 
-                        shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)]
-                        border border-gray-300/50
-                        hover:bg-gray-50 hover:border-gray-400 transition-all duration-200
-                        text-sm font-semibold w-full text-left flex items-center gap-2 mb-5"
+                        className="bg-white text-stone-700 px-4 py-3.5 rounded-2xl 
+                        shadow-xl border border-stone-100
+                        hover:bg-stone-50 hover:text-emerald-900 transition-all duration-200
+                        text-[11px] font-black uppercase tracking-wider w-full text-left flex items-center gap-2 mb-3 animate-pop-in"
                     >
                         Change Password
                     </button>
                 )}
 
-                <div ref={clientRef} className="mt-auto bg-[#132440] rounded-lg p-3">
-                    
-                    <div className="flex items-center gap-3 px-3 mb-3" >
+                {/* Client Info Container: Warm Stone finish */}
+                <div ref={clientRef} className="mt-auto bg-white border border-stone-200 rounded-[2rem] p-4 shadow-sm">
+                    <div className="flex items-center gap-3 mb-4">
                         <div 
                             onClick={handleToggleChangePass}
-                            className="cursor-pointer w-9 h-9 rounded-full bg-linear-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-semibold text-sm"
+                            className="cursor-pointer w-10 h-10 rounded-full bg-gradient-to-br from-emerald-800 to-emerald-950 flex items-center justify-center text-stone-50 font-black text-xs shadow-md active:scale-95 transition-transform"
                         >
                             {clientInitials}
                         </div>
-                        <h5 className="text-white text-sm font-medium truncate">{clientName}</h5>
+                        <div className="flex flex-col overflow-hidden">
+                            <h5 className="text-stone-800 text-sm font-black truncate leading-none">{clientName}</h5>
+                            <span className="text-[10px] text-stone-400 uppercase font-black tracking-[0.2em] mt-1">Client</span>
+                        </div>
                     </div>
                     <button
                         onClick={handleSignOut}
-                        className="flex items-center gap-3 px-3 p-1 rounded-lg text-white hover:bg-gray-500 transition w-full hover:font-semibold"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-stone-400 hover:bg-red-50 hover:text-red-700 transition-all w-full text-[10px] font-black uppercase tracking-widest"
                     >
-                        <PiSignOutBold size={18} /> Sign Out
+                        <PiSignOutBold size={16} /> Sign Out
                     </button>
                 </div>
-                
             </div>
         </>
     );
