@@ -74,8 +74,7 @@ const ChangePass = () => {
                 {/* Header */}
                 <div className="mb-8 text-center">
                     {/* Brand color changed to Emerald 900 */}
-                    <h1 className="text-3xl font-black text-stone-800 mb-2 tracking-tight">Pulse<span className='text-emerald-800'>Tech</span></h1>
-                    <p className="text-stone-500 text-sm font-medium">Secure your account with a new password</p>
+                    <h1 className="text-3xl font-black text-stone-800 mb-2 tracking-tight">Pulse<span className='text-emerald-500'>Tech</span></h1>
                 </div>
 
                 {/* Error Message - Muted Terracotta/Red */}
@@ -91,8 +90,7 @@ const ChangePass = () => {
                     <div className="space-y-1">
                         <label className="text-[10px] font-black text-stone-400 ml-1 uppercase tracking-[0.15em]">Current Password</label>
                         <div className="relative group">
-                            {/* Focus colors changed to Emerald */}
-                            <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-emerald-800 transition-colors" />
+                            <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-emerald-500 transition-colors" />
                             <input 
                                 type={showCurrent ? "text" : "password"}
                                 className="w-full bg-stone-100/50 border border-stone-100 rounded-2xl py-4 pl-12 pr-12 text-stone-700 focus:ring-4 focus:ring-emerald-50 focus:border-emerald-800 transition-all outline-none font-medium"
@@ -115,7 +113,7 @@ const ChangePass = () => {
                     <div className="space-y-1">
                         <label className="text-[10px] font-black text-stone-400 ml-1 uppercase tracking-[0.15em]">New Password</label>
                         <div className="relative group">
-                            <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-emerald-800 transition-colors" />
+                            <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-emerald-500 transition-colors" />
                             <input 
                                 type={showNew ? "text" : "password"}
                                 className="w-full bg-stone-100/50 border border-stone-100 rounded-2xl py-4 pl-12 pr-12 text-stone-700 focus:ring-4 focus:ring-emerald-50 focus:border-emerald-800 transition-all outline-none font-medium"
@@ -137,7 +135,7 @@ const ChangePass = () => {
                     {/* Submit Button - Now Emerald 900 */}
                     <button 
                         type="submit"
-                        className="w-full bg-emerald-900 hover:bg-emerald-950 active:scale-[0.98] text-stone-50 font-black py-4 rounded-2xl shadow-lg shadow-emerald-900/20 transition-all duration-200 mt-2 tracking-wide"
+                        className="w-full bg-emerald-500 hover:bg-emerald-700 active:scale-[0.98] text-stone-50 font-black py-4 rounded-2xl shadow-lg shadow-emerald-900/20 transition-all duration-200 mt-2 tracking-wide"
                     >
                         Update Password
                     </button>
@@ -145,7 +143,7 @@ const ChangePass = () => {
 
                 {/* Footer Link */}
                 <div className="mt-8 text-center">
-                    <Link to="/landing" className="inline-flex items-center text-sm text-stone-400 hover:text-emerald-900 transition-colors font-black group tracking-tight">
+                    <Link to="/landing" className="inline-flex items-center text-sm text-stone-400 hover:text-emerald-500 transition-colors font-black group tracking-tight">
                         <FiArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform" />Back
                     </Link>
                 </div>

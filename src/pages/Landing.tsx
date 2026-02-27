@@ -96,24 +96,24 @@ const Landing: React.FC = () => {
     }, []);
     
     const Spinner = () => (
-        <span className="inline-block w-8 h-8 border-4 border-stone-200 border-t-emerald-900 rounded-full animate-spin" />
+        <span className="inline-block w-8 h-8 border-4 border-slate-200 border-t-teal-500 rounded-full animate-spin" />
     );
 
     return (
-        <div className="mt-12 lg:mt-0 p-4 md:p-8 bg-stone-50 min-h-screen font-sans">
-            {/* Background Decorative Blurs - Mossy and Earthy */}
-            <div className="fixed top-0 right-0 w-[30%] h-[30%] rounded-full bg-emerald-100/20 blur-[100px] pointer-events-none" />
-            <div className="fixed bottom-0 left-0 w-[20%] h-[20%] rounded-full bg-stone-200/40 blur-[80px] pointer-events-none" />
+        <div className="relative mt-12 lg:mt-0 p-4 md:p-8 bg-slate-50 min-h-screen font-sans overflow-hidden">
+            {/* Global Background Accents to match the new component colors */}
+            <div className="absolute top-0 right-0 w-[40%] h-[40%] rounded-full bg-teal-100/30 blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-[40%] h-[40%] rounded-full bg-purple-100/30 blur-[120px] pointer-events-none" />
             
             {/* Header */}
-            <div className="relative z-10 mb-8">
-                <h1 className="text-2xl md:text-4xl font-black text-stone-800 tracking-tight">
-                    Welcome, <span className="text-emerald-900">Client</span>
+            <div className="relative z-10 mb-8 font-extrabold">
+                <h1 className="text-2xl md:text-4xl font-black text-stone-700 tracking-tight">
+                    Welcome, <span className="text-transparent bg-clip-text bg-emerald-500">Client</span>
                 </h1>
             </div>
 
             {error && (
-                <div className="bg-red-50 border border-red-100 text-red-800 p-4 rounded-2xl mb-6 animate-fade-in font-bold text-sm">
+                <div className="bg-red-50 border border-red-100 text-red-600 p-4 rounded-2xl mb-6 font-bold text-xs uppercase tracking-widest text-center">
                     {error}
                 </div>
             )}
@@ -121,18 +121,18 @@ const Landing: React.FC = () => {
             {/* Top Section: Balance + Quick Stats */}
             <div className="relative z-10 flex flex-col lg:flex-row items-start gap-6">
                 
-                {/* Big Balance Card: Deep Forest Aesthetic */}
-                <div className="relative overflow-hidden bg-emerald-950 rounded-[2.5rem] shadow-2xl shadow-emerald-900/20 p-6 md:p-10 w-full lg:basis-[75%] transition-transform hover:scale-[1.005] duration-500 border border-emerald-800/50">   
+                {/* Balance Card: Updated to slate-950 base for better GlowBackground visibility */}
+                <div className="relative overflow-hidden bg-slate-950 rounded-[2.5rem] shadow-2xl shadow-slate-900/20 p-6 md:p-10 w-full lg:basis-[75%] transition-all duration-500 border border-slate-800">   
                     <GlowBackground />
                     
                     <div className="relative z-10">
-                        <div className="flex justify-between items-start text-stone-50">
+                        <div className="flex justify-between items-start text-white">
                             <div className="flex items-center gap-4">
-                                <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 shadow-inner">
-                                    <FaWallet className="text-stone-50 text-xl"/>
+                                <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20">
+                                    <FaWallet className="text-teal-400" size={20}/>
                                 </div>
                                 <div>
-                                    <h2 className="text-stone-300 font-black text-[10px] uppercase tracking-[0.2em]">
+                                    <h2 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">
                                         Total Balance
                                     </h2>
                                 </div>
@@ -140,7 +140,7 @@ const Landing: React.FC = () => {
                             <button
                                 type="button"
                                 onClick={() => setIsBalanceVisible((prev) => !prev)}
-                                className="bg-white/5 hover:bg-white/10 backdrop-blur-md rounded-xl p-2.5 transition-all border border-white/10"
+                                className="bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white rounded-xl p-2.5 transition-all border border-white/5"
                             >
                                 {isBalanceVisible ? <IoEyeOutline size={20} /> : <IoEyeOffOutline size={20} />}
                             </button>
@@ -155,57 +155,53 @@ const Landing: React.FC = () => {
 
                 {/* Quick Stats Column */}
                 <div className="w-full lg:basis-[25%] flex flex-col md:flex-row lg:flex-col gap-4">
-                    {/* Stat 1: TPM (Forest Highlight) */}
-                    <div className="bg-white rounded-[2rem] shadow-sm border border-stone-200 p-6 flex-1 transition-all hover:shadow-md">
+                    <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 flex-1 hover:shadow-md transition-all">
                         <div className="flex justify-between items-center mb-4">
-                            <div className="bg-emerald-50 p-3 rounded-2xl text-emerald-900">
+                            <div className="bg-teal-50 p-3 rounded-2xl text-teal-600">
                                 <GoArrowDownLeft size={24}/>
                             </div>
                         </div>
-                        <h4 className="text-stone-400 font-black text-[10px] uppercase tracking-[0.2em]">Trans. / min</h4>
-                        <p className="text-2xl font-black mt-1 text-stone-800">
+                        <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Trans. / min</h4>
+                        <p className="text-2xl font-black mt-1 text-slate-800">
                             {loading ? <Spinner /> : (totalTPM ?? 0).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </p>
                     </div>
 
-                    {/* Stat 2: Count (Stone Highlight) */}
-                    <div className="bg-white rounded-[2rem] shadow-sm border border-stone-200 p-6 flex-1 transition-all hover:shadow-md">
+                    <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 flex-1 hover:shadow-md transition-all">
                         <div className="flex justify-between items-center mb-4">
-                            <div className="bg-stone-100 p-3 rounded-2xl text-stone-600">
+                            <div className="bg-purple-50 p-3 rounded-2xl text-purple-600">
                                 <MdRepeatOne size={24}/>
                             </div>
                         </div>
-                        <h4 className="text-stone-400 font-black text-[10px] uppercase tracking-[0.2em]">Today's Volume</h4>
-                        <p className="text-2xl font-black mt-1 text-stone-800">
+                        <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Today's Volume</h4>
+                        <p className="text-2xl font-black mt-1 text-slate-800">
                             {loading ? <Spinner/> : (totalTransactions ?? 0).toLocaleString("en-PH")}
                         </p>
                     </div>
                 </div>
             </div>
 
-            {/* Bottom Section: Summary + Metrics */}
+            {/* Bottom Section */}
             <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 mt-10">
 
                 {/* Summary Section */}
                 <div>
-                    <h3 className="text-stone-800 font-black mb-5 text-sm uppercase tracking-widest flex items-center gap-2">
-                        <span className="w-1.5 h-6 bg-emerald-900 rounded-full"></span> Summary
+                    <h3 className="text-slate-800 font-black mb-5 text-sm uppercase tracking-widest flex items-center gap-2">
+                        <span className="w-1.5 h-6 bg-teal-500 rounded-full"></span> Summary
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        {/* Cash In */}
-                        <div className="bg-white rounded-[2rem] shadow-sm border border-stone-200 p-6 hover:border-emerald-200 transition-colors">
-                            <GoArrowDownLeft className="rounded-2xl p-3 text-5xl bg-emerald-50 text-emerald-900 mb-4"/>
-                            <h4 className="text-stone-400 font-black text-[10px] uppercase tracking-[0.2em]">Cash In</h4>
-                            <p className="text-2xl font-black mt-1 text-stone-800">
+                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all">
+                            <GoArrowDownLeft className="rounded-2xl p-3 text-5xl bg-teal-50 text-teal-600 mb-4"/>
+                            <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Cash In</h4>
+                            <p className="text-2xl font-black mt-1 text-slate-800">
                                 {loading ? <Spinner /> : `₱${(paymentData?.TOTAL ?? 0).toLocaleString("en-PH", {minimumFractionDigits: 2})}`}
                             </p>
                         </div>
 
-                        {/* Cash Out (Muted Terracotta) */}
-                        <div className="bg-white rounded-[2rem] shadow-sm border border-stone-200 p-6 hover:border-orange-100 transition-colors">
-                            <GoArrowUpRight className="rounded-2xl p-3 text-5xl bg-orange-50 text-orange-800 mb-4"/>
-                            <h4 className="text-stone-400 font-black text-[10px] uppercase tracking-[0.2em]">Cash Out</h4>
-                            <p className="text-2xl font-black mt-1 text-stone-800">
+                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-blue-200 transition-all">
+                            <GoArrowUpRight className="rounded-2xl p-3 text-5xl bg-blue-50 text-blue-600 mb-4"/>
+                            <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Cash Out</h4>
+                            <p className="text-2xl font-black mt-1 text-slate-800">
                                 {loading ? <Spinner /> : `₱${(fundTransferData?.TOTAL ?? 0).toLocaleString("en-PH", {minimumFractionDigits: 2})}`}
                             </p>
                         </div>
@@ -214,22 +210,22 @@ const Landing: React.FC = () => {
 
                 {/* Metrics Section */}
                 <div>
-                    <h3 className="text-stone-800 font-black mb-5 text-sm uppercase tracking-widest flex items-center gap-2">
-                        <span className="w-1.5 h-6 bg-stone-400 rounded-full"></span> Performance
+                    <h3 className="text-slate-800 font-black mb-5 text-sm uppercase tracking-widest flex items-center gap-2">
+                        <span className="w-1.5 h-6 bg-purple-500 rounded-full"></span> Performance
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div className="bg-white rounded-[2rem] shadow-sm border border-stone-200 p-6">
-                            <RiTimeLine className="rounded-2xl p-3 text-5xl bg-stone-100 text-stone-600 mb-4"/>
-                            <h4 className="text-stone-400 font-black text-[10px] uppercase tracking-[0.2em]">TPM (Cash In)</h4>
-                            <p className="text-2xl font-black mt-1 text-stone-800">
+                        <div className="bg-white/60 backdrop-blur-sm rounded-[2rem] shadow-sm border border-white p-6">
+                            <RiTimeLine className="rounded-2xl p-3 text-5xl bg-slate-100 text-slate-500 mb-4"/>
+                            <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">TPM (Cash In)</h4>
+                            <p className="text-2xl font-black mt-1 text-slate-800">
                                 {loading ? <Spinner /> : (paymentData?.TRX_PER_MIN.toLocaleString("en-PH", {minimumFractionDigits: 2}) ?? "0.00")}
                             </p>
                         </div>
 
-                        <div className="bg-white rounded-[2rem] shadow-sm border border-stone-200 p-6">
-                            <GrTime className="rounded-2xl p-3 text-5xl bg-stone-100 text-stone-600 mb-4"/>
-                            <h4 className="text-stone-400 font-black text-[10px] uppercase tracking-[0.2em]">TPM (Cash Out)</h4>
-                            <p className="text-2xl font-black mt-1 text-stone-800">
+                        <div className="bg-white/60 backdrop-blur-sm rounded-[2rem] shadow-sm border border-white p-6">
+                            <GrTime className="rounded-2xl p-3 text-5xl bg-slate-100 text-slate-500 mb-4"/>
+                            <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">TPM (Cash Out)</h4>
+                            <p className="text-2xl font-black mt-1 text-slate-800">
                                 {loading ? <Spinner /> : (fundTransferData?.TRX_PER_MIN.toLocaleString("en-PH", {minimumFractionDigits: 2}) ?? "0.00")}
                             </p>
                         </div>

@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { PiSignOutBold } from "react-icons/pi";
 import { LuBlocks } from "react-icons/lu";
 import { PiHandWithdrawBold } from "react-icons/pi";
@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 export default function Sidebar() {
     const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
+    const location = useLocation();
     const [mobileOpen, setMobileOpen] = useState(false);
     const [clientName, setClientName] = useState<string>("");
     const [_error, setError] = useState<string | undefined>(undefined);
@@ -43,13 +44,10 @@ export default function Sidebar() {
             }
         };
         fetchClientName();
-    }, []);
-
-    const [_accessToken, setAccessToken] = useState(() => localStorage.getItem("accessToken"));
+    }, [API_URL]);
 
     const handleSignOut = async () => {
         localStorage.removeItem('accessToken');
-        setAccessToken(null);
         navigate("/login", { replace: true });
     };  
 
@@ -77,94 +75,93 @@ export default function Sidebar() {
 
     return (
         <>
-            {/* Hamburger Button: Matched to Stone Theme */}
+            {/* Hamburger Button: Matched to Lighter Theme */}
             <div className="lg:hidden fixed top-4 left-4 z-50">
                 <button
                     onClick={() => setMobileOpen(!mobileOpen)}
-                    className="text-stone-600 bg-white/80 backdrop-blur-md p-2.5 rounded-xl shadow-md border border-stone-200 active:scale-90 transition-transform"
+                    className="text-stone-600 bg-white/90 backdrop-blur-md p-2.5 rounded-xl shadow-lg shadow-emerald-900/5 border border-white active:scale-90 transition-transform"
                 >
                     {mobileOpen ? <IoClose size={24} /> : <HiOutlineMenu size={24} />}
                 </button>
             </div>
 
-            {/* Sidebar: Warm Stone Glassmorphism */}
+            {/* Sidebar: Minty Glassmorphism */}
             <div
                 className={`
-                    h-full w-64 bg-stone-50/80 backdrop-blur-2xl flex flex-col p-4
+                    h-full w-64 bg-white/70 backdrop-blur-2xl flex flex-col p-5
                     fixed top-0 left-0 z-40 lg:relative lg:translate-x-0
-                    transition-transform duration-300 ease-in-out border-r border-stone-200
+                    transition-transform duration-300 ease-in-out border-r border-stone-100
                     ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
                 `}
             >
-                {/* Decorative Background Blur (Mossy accent) */}
-                <div className="absolute top-[-5%] left-[-10%] w-32 h-32 rounded-full bg-emerald-100/30 blur-3xl -z-10" />
+                {/* Subtle Glow Accent */}
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-emerald-50/50 blur-3xl -z-10" />
                 
                 {/* Logo Section */}
-                <div className="flex flex-col items-center gap-2 mb-10 mt-6">
-                    <div className="bg-white rounded-2xl shadow-sm border border-stone-100 p-2.5">
+                <div className="flex flex-col items-center gap-2 mb-10 mt-4">
+                    <div className="bg-white rounded-2xl shadow-sm border border-emerald-50 p-3 transition-transform hover:scale-105 duration-300">
                         <img
                             src="/pulselogobgremoved.png"
                             alt="PulseTech"
-                            className="w-14 h-14 object-contain"
+                            className="w-12 h-12 object-contain"
                         />
                     </div>
-                    <h1 className="text-xl font-black text-stone-800 tracking-tight mt-2">
-                    </h1>
+                    <div className="text-center">
+                    </div>
                 </div>
 
-                {/* Navigation: Bold Forest Style */}
+                {/* Navigation: Light & Vibrant Emerald */}
                 <nav className="flex flex-col gap-2 flex-1">
                     {navItems.map((item) => {
                         const Icon = item.icon;
-                        const isActive = item.path === window.location.pathname || (item.path === "/landing" && window.location.pathname === "/");
+                        const isActive = location.pathname === item.path || (item.path === "/landing" && location.pathname === "/");
                         return (
                             <NavLink
                                 key={item.path}
                                 to={item.path}
-                                className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 ${
+                                className={`flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 ${
                                     isActive
-                                        ? "bg-emerald-900 text-stone-50 shadow-lg shadow-emerald-900/20 font-black"
-                                        : "text-stone-500 hover:bg-stone-100 hover:text-emerald-900 font-bold"
+                                        ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/25 font-bold"
+                                        : "text-stone-400 hover:bg-emerald-50 hover:text-emerald-600 font-medium"
                                 }`}
                                 onClick={() => setMobileOpen(false)}
                             >
-                                <Icon className={`text-xl ${isActive ? "text-stone-50" : "text-stone-400"}`} />
-                                <span className="text-xs uppercase tracking-widest">{item.name}</span>
+                                <Icon className={`text-xl ${isActive ? "text-white" : "text-stone-300"}`} />
+                                <span className="text-[11px] uppercase tracking-widest">{item.name}</span>
                             </NavLink>
                         );
                     })}
                 </nav>
 
-                {/* Change Password Popover (Earthy Tone) */}
+                {/* Change Password Popover (Clean Mint) */}
                 {showChangePass && (
                     <button
                         onClick={handleChangePass}
-                        className="bg-white text-stone-700 px-4 py-3.5 rounded-2xl 
-                        shadow-xl border border-stone-100
-                        hover:bg-stone-50 hover:text-emerald-900 transition-all duration-200
-                        text-[11px] font-black uppercase tracking-wider w-full text-left flex items-center gap-2 mb-3 animate-pop-in"
+                        className="bg-emerald-600 text-white px-4 py-3.5 rounded-xl 
+                        shadow-xl shadow-emerald-900/10 border border-emerald-500
+                        hover:bg-emerald-700 transition-all duration-200
+                        text-[10px] font-bold uppercase tracking-widest w-full text-left flex items-center gap-2 mb-3 animate-fade-in-up"
                     >
                         Change Password
                     </button>
                 )}
 
-                {/* Client Info Container: Warm Stone finish */}
-                <div ref={clientRef} className="mt-auto bg-white border border-stone-200 rounded-[2rem] p-4 shadow-sm">
+                {/* Client Info Container: Soft Stone & Emerald Gradient */}
+                <div ref={clientRef} className="mt-auto bg-stone-50/50 border border-stone-100 rounded-[1.5rem] p-4">
                     <div className="flex items-center gap-3 mb-4">
                         <div 
                             onClick={handleToggleChangePass}
-                            className="cursor-pointer w-10 h-10 rounded-full bg-gradient-to-br from-emerald-800 to-emerald-950 flex items-center justify-center text-stone-50 font-black text-xs shadow-md active:scale-95 transition-transform"
+                            className="cursor-pointer w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-emerald-500 flex items-center justify-center text-white font-bold text-xs shadow-md shadow-emerald-500/20 active:scale-95 transition-transform"
                         >
                             {clientInitials}
                         </div>
                         <div className="flex flex-col overflow-hidden">
-                            <h5 className="text-stone-800 text-sm font-black truncate leading-none">{clientName}</h5>
-                            <span className="text-[10px] text-stone-400 uppercase font-black tracking-[0.2em] mt-1">Client</span>
+                            <h5 className="text-stone-700 text-sm font-bold truncate leading-none">{clientName || "User"}</h5>
                         </div>
                     </div>
                     <button
                         onClick={handleSignOut}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-stone-400 hover:bg-red-50 hover:text-red-700 transition-all w-full text-[10px] font-black uppercase tracking-widest"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-stone-400 hover:bg-red-50 hover:text-red-500 transition-all w-full text-[10px] font-bold uppercase tracking-widest"
                     >
                         <PiSignOutBold size={16} /> Sign Out
                     </button>

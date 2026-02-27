@@ -34,7 +34,6 @@ interface withdrawalAccount {
     merchant_id: string;
 }
 
-
 const Withdrawal: React.FC = () => {
     const API_URL = import.meta.env.VITE_API_URL;
     const API_URL2 = import.meta.env.VITE_API_URL;
@@ -43,6 +42,7 @@ const Withdrawal: React.FC = () => {
     const [_loadingAccounts, setLoadingAccounts] = useState<boolean>(true);
     const [_errorAccounts, setErrorAccounts] = useState<string | null>(null);
     const [amountError, setAmountError] = useState<string | null>(null);
+    
     // Loading states
     const [_loading, setLoading] = useState(true);
     const [withdrawalAccountsLoading, setWithdrawalAccountsLoading] = useState(true);
@@ -150,7 +150,6 @@ const Withdrawal: React.FC = () => {
         }, 0);
     };
 
-
     const handleAmountBlur = () => {
         const value = formData.amount.trim();
 
@@ -199,7 +198,6 @@ const Withdrawal: React.FC = () => {
     }
 
     useEffect(() => {
-        
         const fetchAccounts = async () => {
             try {
                 setLoadingAccounts(true);
@@ -286,8 +284,6 @@ const Withdrawal: React.FC = () => {
         }
 
         try {
-            
-
             // Build request payload to match WithdrawalRequest
             const payload = {
                 wallet_id: `${selectedAccountId}`, 
@@ -329,7 +325,7 @@ const Withdrawal: React.FC = () => {
 
     return (
         <div className="p-4 md:p-8 bg-stone-50 min-h-screen">
-            <h1 className="text-3xl font-bold mb-6 mt-12 lg:mt-0 text-emerald-900">Withdraw Details</h1>
+            <h1 className="text-3xl font-extrabold mb-6 mt-12 lg:mt-0 text-stone-700">Withdraw Details</h1>
 
             <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
 
@@ -370,7 +366,7 @@ const Withdrawal: React.FC = () => {
                             {/* PESONet */}
                             {/* <label
                             className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all w-full ${
-                                formData.method === "pesonet" ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-gray-300"
+                                formData.method === "pesonet" ? "border-emerald-500 bg-emerald-50" : "border-gray-200 hover:border-gray-300"
                             }`}
                             >
                             <input
@@ -383,7 +379,7 @@ const Withdrawal: React.FC = () => {
                             />
                             <div
                                 className={`p-2 rounded-lg ${
-                                formData.method === "pesonet" ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-600"
+                                formData.method === "pesonet" ? "bg-emerald-500 text-white" : "bg-gray-100 text-gray-600"
                                 }`}
                             >
                                 <LuBuilding2 className="w-5 h-5" />
@@ -402,16 +398,11 @@ const Withdrawal: React.FC = () => {
                             Withdrawal Account
                         </h2>
 
-                        {/* Using a 6-column grid on desktop:
-                            - Cards span 3 columns (3+3 = 6), forcing exactly 2 per row.
-                            - On mobile/small screens, they span the full width.
-                        */}
-                        
                             {withdrawalAccountsLoading ?
                             (
                                 // Loading state
                                 <div className="flex justify-center items-center p-8">
-                                <Spinner /> {/* Replace with your spinner component */}
+                                <Spinner />
                                 </div>
                             ) : _withdrawalAccounts.length === 0 ? (
                                 // No accounts
@@ -465,8 +456,8 @@ const Withdrawal: React.FC = () => {
                         </div>
                         )}
                     </div>
+
                     {/* Form */}
-                    
                         <form onSubmit={handleSubmit} className="flex flex-col flex-1 space-y-8">
                             <div>
                                 <label className="block text-sm font-semibold text-emerald-800/50 uppercase tracking-wider mb-4">Amount</label>
@@ -507,7 +498,6 @@ const Withdrawal: React.FC = () => {
                             </div> */}
 
                         </form>
-                    
                 </div>
 
                 {/* RIGHT: Balance + Transfer Info */}
@@ -580,6 +570,7 @@ const Withdrawal: React.FC = () => {
                         </button>
 
                     </div>
+
                     {/* Transfer Info Details */}
                     {/* <div className="bg-white shadow-lg rounded-2xl p-5 space-y-4">
                         <h4 className="font-semibold">Transfer Information</h4>
@@ -616,8 +607,7 @@ const Withdrawal: React.FC = () => {
                     </div> */}
                 </div>
             </div>
-    </div>
-
+        </div>
     );
 };
 
