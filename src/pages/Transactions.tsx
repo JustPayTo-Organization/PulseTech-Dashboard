@@ -68,11 +68,14 @@ const Transactions: React.FC = () => {
     const [isDownloading, setIsDownloading] = useState(false);
 
     const today = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
-    const [dateInput, setDateInput] = useState(today);
+    const [fromDate, setFromDate] = useState("");
+    const [toDate, setToDate] = useState("");
+
+    const [appliedFromDate, setAppliedFromDate] = useState("");
+    const [appliedToDate, setAppliedToDate] = useState("");
 
     const [appliedStatus, setAppliedStatus] = useState("");
     const [appliedType, setAppliedType] = useState("");
-    const [appliedDate, setAppliedDate] = useState("");
 
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(25);
@@ -117,7 +120,8 @@ const Transactions: React.FC = () => {
     const handleApplyFilters = () => {
         setAppliedStatus(statusInput);
         setAppliedType(typeInput);
-        setAppliedDate(dateInput);
+        setAppliedFromDate(fromDate);
+        setAppliedToDate(toDate);
         setCurrentPage(1);
     };
 
@@ -165,8 +169,8 @@ const Transactions: React.FC = () => {
         try {
             const params = new URLSearchParams();
 
-            params.append("start", appliedDate || new Date().toISOString().slice(0, 10));
-            params.append("end", appliedDate || new Date().toISOString().slice(0, 10));
+            params.append("start", appliedFromDate || new Date().toISOString().slice(0, 10));
+            params.append("end", appliedToDate || new Date().toISOString().slice(0, 10));
             // params.append("page", (currentPage - 1).toString());
             // params.append("limit", rowsPerPage.toString());
             
@@ -214,15 +218,35 @@ const Transactions: React.FC = () => {
     const handleClearFilters = () => {
         setStatusInput(""); 
         setTypeInput(""); 
-        setDateInput(today);
         setAppliedStatus(""); 
         setAppliedType(""); 
-        setAppliedDate(today);
+        setAppliedFromDate(today);
+        setAppliedToDate(today);
         setCurrentPage(1);
     }
     useEffect(() => {
         fetchTransactions();
-    }, [appliedStatus, appliedType, appliedDate, rowsPerPage]); //removed currentPage
+    }, [appliedStatus, appliedType, appliedFromDate, , appliedToDate, rowsPerPage]); //removed currentPage
+
+    const [activeTab, setActiveTab] = useState<"all" | number | null> (null);
+
+    const handleButtonDateFilter = (days: "all" | number) => {
+        const today = new Date();
+        const to = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        
+        // Set which button is active
+        setActiveTab(days);
+
+        if (days === 'all') {
+            setFromDate("");
+            setToDate("");
+        } else {
+            const from = new Date();
+            from.setDate(today.getDate() - days);
+            setFromDate(from.toISOString().split('T')[0]);
+            setToDate(to);
+        }
+    };
 
     const Spinner = () => (
         <span className="inline-block w-8 h-8 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin mx-auto" />
@@ -311,7 +335,49 @@ const Transactions: React.FC = () => {
                 <div className="flex flex-nowrap overflow-x-auto pb-2 md:pb-0 md:flex-wrap lg:flex-row gap-3 flex-1 scrollbar-hide">
                     
                     {/* Date Input*/}
-                    <div className="relative min-w-35 md:flex-1"
+                    
+                    {/* QUICK FILTERS */}
+                    <div className="flex gap-2 min-w-max">
+                    {/* All Button */}
+                    {/* <button
+                        onClick={() => handleButtonDateFilter('all')}
+                        className={`px-3 py-2 text-xs font-semibold rounded-xl transition-all border ${
+                            activeTab === 'all'
+                                ? 'bg-emerald-500 text-white border-emerald-500 shadow-sm'
+                                : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                        }`}
+                    >
+                        All
+                    </button> */}
+
+                    {/* Last 7 Days Button */}
+                    <button
+                        onClick={() => handleButtonDateFilter(7)}
+                        className={`px-3 py-2 text-xs font-semibold rounded-xl transition-all border ${
+                            activeTab === 7
+                                ? 'bg-emerald-500 text-white border-emerald-500 shadow-sm'
+                                : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                        }`}
+                    >
+                        Last 7 Days
+                    </button>
+
+                    {/* Last 20 Days Button */}
+                    <button
+                        onClick={() => handleButtonDateFilter(20)}
+                        className={`px-3 py-2 text-xs font-semibold rounded-xl transition-all border ${
+                            activeTab === 20
+                                ? 'bg-emerald-500 text-white border-emerald-500 shadow-sm'
+                                : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                        }`}
+                    >
+                        Last 20 Days
+                    </button>
+                    </div>
+
+                    {/* FROM DATE */}
+                    <div
+                        className="relative min-w-35 md:flex-1"
                         onClick={(e) => {
                             if ((e.target as HTMLElement).tagName !== "INPUT") {
                                 const input = (e.currentTarget.querySelector("input") as HTMLInputElement);
@@ -324,8 +390,31 @@ const Transactions: React.FC = () => {
                         </span>
                         <input
                             type="date"
-                            value={dateInput}
-                            onChange={(e) => setDateInput(e.target.value)}
+                            value={fromDate}
+                            onChange={(e) => setFromDate(e.target.value)}
+                            max={toDate || undefined} // prevents selecting beyond "to"
+                            className="w-full border border-stone-200 rounded-xl pl-9 px-2 py-2 text-sm focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-400 outline-none text-stone-600 transition-all"
+                        />
+                    </div>
+
+                    {/* TO DATE */}
+                    <div
+                        className="relative min-w-35 md:flex-1"
+                        onClick={(e) => {
+                            if ((e.target as HTMLElement).tagName !== "INPUT") {
+                                const input = (e.currentTarget.querySelector("input") as HTMLInputElement);
+                                input?.showPicker?.();
+                            }
+                        }}
+                    >
+                        <span className="absolute inset-y-0 left-2.5 flex items-center text-emerald-400">
+                            <CiCalendar size={18} />
+                        </span>
+                        <input
+                            type="date"
+                            value={toDate}
+                            onChange={(e) => setToDate(e.target.value)}
+                            min={fromDate || undefined} // prevents selecting before "from"
                             className="w-full border border-stone-200 rounded-xl pl-9 px-2 py-2 text-sm focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-400 outline-none text-stone-600 transition-all"
                         />
                     </div>
