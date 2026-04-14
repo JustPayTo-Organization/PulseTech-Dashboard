@@ -8,6 +8,7 @@ import Login from "../pages/Login";
 import ChangePass from "../pages/ChangePass";
 import ProtectedRoute from "../components/auth_guard/ProtectedRoute"
 import QueuePage from "../pages/QueuePage"
+// import OldLanding from "../pages/OldLanding"
 
 export default function Layout() {  
     const location = useLocation();
