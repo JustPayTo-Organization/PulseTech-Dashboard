@@ -526,7 +526,7 @@ const Transactions: React.FC = () => {
             <table className="min-w-full divide-y divide-stone-100">
             <thead className="bg-stone-50/50">
                 <tr>
-                {["Transaction ID", "Reference", "Amount", "Processing Fee", "International Fee", "Amount Paid", "Payment Status", "Settlement Status", "Created at", "Customer Name"].map((header) => (
+                {["Transaction ID", "Reference", "Amount", "Processing Fee", "International Fee", "Amount Paid", "Payment Status", "Settlement Status", "Created at","Paid At", "Customer Name"].map((header) => (
                     <th key={header} className="px-6 py-4 text-left text-[10px] font-bold text-stone-400 uppercase tracking-widest whitespace-nowrap">{header}</th>
                 ))}
                 </tr>
@@ -580,7 +580,7 @@ const Transactions: React.FC = () => {
                     </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.created_at)}</td>
-                    {/* <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.paid_at)}</td> */}
+                    <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.paid_at)}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.card_details ?? null)}</td>
                 </tr>
                 ))
