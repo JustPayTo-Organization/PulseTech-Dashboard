@@ -10,14 +10,19 @@ export interface Transaction {
     amount: number;
     created_at: string;
     error?: string;
-    fees: number;
+    fees: {
+        sending: string;
+        international_card?: string;
+    };
     instapay_reference: string;
     merchant_id: string;
     paid_at: string;
     reference_id: string;
     status: "SUCCESS" | "PENDING" | "FAILED" | "CLOSED";
+    settlement: string | null;
     transaction_id: string;
     type: "PAYMENT" | "FUND_TRANSFER";
+    card_details?: string | null;
 }
 
 const formatDateTime = (dateStr: string | null) => {
@@ -188,7 +193,7 @@ const Transactions: React.FC = () => {
             // });
 
             const token = localStorage.getItem("accessToken"); // or from cookie
-            const res = await fetch(`${API_URL}/dashboard/transactions?${params.toString()}`, {
+            const res = await fetch(`${API_URL}/dashboard/transactions/credit-card?${params.toString()}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -268,6 +273,14 @@ const Transactions: React.FC = () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
+    const transactionsWithTotal = currentTransactions.map((tx) => ({
+    ...tx,
+    AmountPaidTotal:
+        Number(tx?.amount ?? 0) +
+        Number(tx?.fees?.sending ?? 0) +
+        Number(tx?.fees?.international_card ?? 0),
+    }));
 
     return (
         
@@ -513,7 +526,7 @@ const Transactions: React.FC = () => {
             <table className="min-w-full divide-y divide-stone-100">
             <thead className="bg-stone-50/50">
                 <tr>
-                {["Transaction ID", "Reference", "Instapay Ref", "Amount", "Type", "Status", "Created", "Paid"].map((header) => (
+                {["Transaction ID", "Reference", "Amount", "Processing Fee", "International Fee", "Amount Paid", "Payment Status", "Settlement Status", "Created at", "Customer Name"].map((header) => (
                     <th key={header} className="px-6 py-4 text-left text-[10px] font-bold text-stone-400 uppercase tracking-widest whitespace-nowrap">{header}</th>
                 ))}
                 </tr>
@@ -535,22 +548,40 @@ const Transactions: React.FC = () => {
                 </tr>
             ) :
             currentTransactions.length > 0 ? (
-                currentTransactions.map((tx) => (
+                transactionsWithTotal.map((tx) => (
                 <tr key={tx.transaction_id} className="hover:bg-emerald-50/30 transition-colors">
                     <td className="px-6 py-4 text-stone-400 font-mono whitespace-nowrap">{tx.transaction_id ?? "N/A"}</td>
                     <td className="px-6 py-4 font-bold text-stone-700">{tx.reference_id}</td>
-                    <td className="px-6 py-4 text-stone-600">{tx.instapay_reference}</td>
-                    <td className={`px-6 py-4 font-bold ${tx.type === "PAYMENT" ? "text-emerald-600" : "text-red-500"}`}>
-                    {tx.type === "PAYMENT" ? "+" : "-"}₱{tx.amount.toLocaleString("en-PH")}
+                    <td className={`px-6 py-4 font-bold text-emerald-600`}>
+                        ₱{tx.amount.toLocaleString("en-PH")}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-stone-600">{tx.type === "PAYMENT" ? "Cash in" : "Cash out"}</td>
+                    <td className={`px-6 py-4 font-bold text-emerald-600`}>
+                        ₱{Number(tx.fees?.sending ?? 0 ).toLocaleString("en-PH")}
+                    </td>
+                    <td className={`px-6 py-4 font-bold text-emerald-600`}>
+                        ₱{Number(tx.fees?.international_card ?? 0 ).toLocaleString("en-PH")}
+                    </td>
+                    <td className={`px-6 py-4 font-bold text-emerald-600`}>
+                        ₱{tx.AmountPaidTotal.toLocaleString("en-PH")}
+                    </td>
+                    {/* Payment Status */}
                     <td className="px-6 py-4">
                     <span className={`px-3 py-1 text-[10px] leading-5 font-bold rounded-full border ${getStatusClass(tx.status)}`}>
                         {tx.status.charAt(0) + tx.status.slice(1).toLowerCase()}
                     </span>
                     </td>
+                    {/* Settlement Status */}
+                    <td className="px-6 py-4">
+                    <span className={`px-3 py-1 text-[10px] leading-5 font-bold rounded-full border ${getStatusClass(tx.status)}`}>
+                        {tx?.settlement 
+                        ? tx?.settlement.charAt(0).toUpperCase() + tx.settlement.slice(1).toLowerCase()
+                        : "N/A"
+                        }
+                    </span>
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.created_at)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.paid_at)}</td>
+                    {/* <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.paid_at)}</td> */}
+                    <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.card_details ?? null)}</td>
                 </tr>
                 ))
             ) : (
