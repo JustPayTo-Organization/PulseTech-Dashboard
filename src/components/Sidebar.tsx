@@ -2,7 +2,7 @@ import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { PiSignOutBold } from "react-icons/pi";
 import { LuBlocks } from "react-icons/lu";
 import { PiHandWithdrawBold } from "react-icons/pi";
-import { RiArrowLeftRightLine } from "react-icons/ri";
+// import { RiArrowLeftRightLine } from "react-icons/ri";
 import { HiOutlineMenu } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import { useEffect, useRef, useState } from "react";
@@ -18,8 +18,8 @@ export default function Sidebar() {
     
     const navItems = [
         { name: "Overview", path: "/landing", icon: LuBlocks },
-        { name: "Transactions", path: "/transactions", icon: PiHandWithdrawBold },
-        { name: "Withdrawal", path: "/withdrawal", icon: RiArrowLeftRightLine },
+        { name: "Transactions", path: "/transactions", icon: PiHandWithdrawBold }
+        // { name: "Withdrawal", path: "/withdrawal", icon: RiArrowLeftRightLine },
     ];  
 
     useEffect(() => {
