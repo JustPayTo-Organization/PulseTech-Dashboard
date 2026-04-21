@@ -602,7 +602,12 @@ const Transactions: React.FC = () => {
                         }
                     </td>
                     <td className={`px-6 py-4 font-bold text-emerald-600`}>
-                        ₱{Number(tx.fees?.sending ?? 0 ).toLocaleString("en-PH")}
+                        ₱{Number(tx.fees?.sending ?? 0 ).toLocaleString("en-PH" , {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                }   
+                            )
+                        }
                     </td>
                     <td className={`px-6 py-4 font-bold text-emerald-600`}>
                         ₱{Number(tx.fees?.international_card ?? 0 ).toLocaleString("en-PH", {
