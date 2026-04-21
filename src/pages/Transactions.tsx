@@ -87,6 +87,14 @@ const Transactions: React.FC = () => {
     const [_downloadQueue, _setDownloadQueue] = useState<DownloadJob[]>([]);
     const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+    const totalAmountPaid =
+        Number(selectedTransaction?.amount ?? 0) +
+        Number(selectedTransaction?.fees?.sending ?? 0) +
+        Number(selectedTransaction?.fees?.international_card ?? 0);
+  
+    const mobileAmount = Number(selectedTransaction?.amount ?? 0);
+    const mobileSendingFee = Number(selectedTransaction?.fees?.sending ?? 0);
+    const mobileIntlFee = Number(selectedTransaction?.fees?.international_card ?? 0);
     const [modalOpen, setModalOpen] = useState(false);
 
     const openModal = (tx: Transaction) => {
@@ -164,6 +172,21 @@ const Transactions: React.FC = () => {
             return "bg-stone-100 text-stone-600 border-stone-200";
         default:
             return "";
+        }
+    };
+
+    const getSettlementStatusClass = (status: string | null | undefined) => {
+        if (!status) return "border rounded-full bg-stone-100 text-stone-600 border-stone-200";
+
+        switch (status) {
+        case "verified":
+            return "bg-amber-50 text-amber-600 border-amber-200";
+        case "complete":
+            return "bg-emerald-50 text-emerald-600 border-emerald-200";
+        case "pending_payment":
+            return "";
+        default:
+            return "bg-stone-100 text-stone-600 border-stone-200";
         }
     };
 
@@ -281,6 +304,21 @@ const Transactions: React.FC = () => {
         Number(tx?.fees?.sending ?? 0) +
         Number(tx?.fees?.international_card ?? 0),
     }));
+
+    const formatSettlement = (value?: string | null | undefined) => {
+        if (!value) return "N/A";
+
+        switch (value) {
+            case "verified":
+            return "Pending";
+            case "complete":
+            return "Settled";
+            case "pending_payment":
+            return ""; // empty string
+            default:
+            return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+        }
+    };
 
     return (
         
@@ -548,21 +586,39 @@ const Transactions: React.FC = () => {
                 </tr>
             ) :
             currentTransactions.length > 0 ? (
-                transactionsWithTotal.map((tx) => (
+                transactionsWithTotal.map((tx) => {
+                const isPending = tx?.settlement && tx.settlement !== "pending_payment";
+                
+                return (
                 <tr key={tx.transaction_id} className="hover:bg-emerald-50/30 transition-colors">
                     <td className="px-6 py-4 text-stone-400 font-mono whitespace-nowrap">{tx.transaction_id ?? "N/A"}</td>
                     <td className="px-6 py-4 font-bold text-stone-700">{tx.reference_id}</td>
                     <td className={`px-6 py-4 font-bold text-emerald-600`}>
-                        ₱{tx.amount.toLocaleString("en-PH")}
+                        ₱{tx.amount.toLocaleString("en-PH", {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                }   
+                            )
+                        }
                     </td>
                     <td className={`px-6 py-4 font-bold text-emerald-600`}>
                         ₱{Number(tx.fees?.sending ?? 0 ).toLocaleString("en-PH")}
                     </td>
                     <td className={`px-6 py-4 font-bold text-emerald-600`}>
-                        ₱{Number(tx.fees?.international_card ?? 0 ).toLocaleString("en-PH")}
+                        ₱{Number(tx.fees?.international_card ?? 0 ).toLocaleString("en-PH", {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                }   
+                            )
+                        }
                     </td>
                     <td className={`px-6 py-4 font-bold text-emerald-600`}>
-                        ₱{tx.AmountPaidTotal.toLocaleString("en-PH")}
+                        ₱{tx.AmountPaidTotal.toLocaleString("en-PH", {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                }   
+                            )
+                        }
                     </td>
                     {/* Payment Status */}
                     <td className="px-6 py-4">
@@ -572,18 +628,15 @@ const Transactions: React.FC = () => {
                     </td>
                     {/* Settlement Status */}
                     <td className="px-6 py-4">
-                    <span className={`px-3 py-1 text-[10px] leading-5 font-bold rounded-full border ${getStatusClass(tx.status)}`}>
-                        {tx?.settlement 
-                        ? tx?.settlement.charAt(0).toUpperCase() + tx.settlement.slice(1).toLowerCase()
-                        : "N/A"
-                        }
+                    <span className={`px-3 py-1 text-[10px] leading-5 font-bold ${isPending ? "rounded-full border" : ""} ${getSettlementStatusClass(tx?.settlement)}`}>
+                        {formatSettlement(tx?.settlement)}
                     </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.created_at)}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.paid_at)}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.card_details ?? null)}</td>
                 </tr>
-                ))
+                )})
             ) : (
                 <tr>
                 <td colSpan={9} className="px-6 py-4 text-center text-stone-400">
@@ -606,46 +659,70 @@ const Transactions: React.FC = () => {
             <div className="text-center py-8 text-red-500 font-bold">
                 Invalid Token, Please Log in Again
             </div>
-        ) : currentTransactions.map((tx) => (
-            <div key={tx.transaction_id} className="bg-white/80 backdrop-blur-md p-4 rounded-2xl border border-white shadow-sm">
+        ) : currentTransactions.map((tx) => {
+
+            const totalAmountPaid =
+                Number(tx.amount ?? 0) +
+                Number(tx.fees?.sending ?? 0) +
+                Number(tx.fees?.international_card ?? 0);
+
+            // Determine if settlement should have a border (consistent with your desktop logic)
+            const isSettled = tx?.settlement && tx.settlement !== "pending_payment";
+
+            return (
+                <div key={tx.transaction_id} className="bg-white/80 backdrop-blur-md p-4 rounded-2xl border border-white shadow-sm">
                 <div className="flex justify-between items-start mb-3">
                     <div>
-                    <p className="text-[10px] text-stone-400 font-mono uppercase tracking-tighter">{tx.transaction_id}</p>
-                    <p className="font-bold text-stone-800">{tx.instapay_reference}</p>
+                    <p className="text-[10px] text-stone-400 font-mono uppercase tracking-tighter">
+                        {tx.transaction_id}
+                    </p>
+                    {/* Added reference_id here so mobile users know what the transaction is for */}
+                    <p className="font-bold text-stone-700 text-sm">{tx.reference_id}</p>
                     </div>
 
-                    {/* Right side: status badge + triple-dot */}
+                    {/* Right side: Status Badges + Action Button */}
+                    <div className="flex flex-col items-end gap-1.5">
                     <div className="flex items-center gap-2">
-                    <span className={`px-3 py-1 text-[10px] font-bold rounded-full border ${getStatusClass(tx.status)}`}>
-                        {tx.status}
-                    </span>
+                        <span className={`px-3 py-1 text-[10px] font-bold rounded-full border ${getStatusClass(tx.status)}`}>
+                        {tx.status.charAt(0) + tx.status.slice(1).toLowerCase()}
+                        </span>
 
-                    <button
+                        <button
                         onClick={() => openModal(tx)}
                         className="p-1 text-stone-300 hover:text-emerald-500 transition-colors"
                         aria-label="View Details"
-                    >
+                        >
                         ⋮
-                    </button>
+                        </button>
+                    </div>
+
+                    {/* New Settlement Status Badge */}
+                    <span className={`px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${isSettled ? "rounded-full border" : ""} ${getSettlementStatusClass(tx?.settlement)}`}>
+                        {formatSettlement(tx?.settlement)}
+                    </span>
                     </div>
                 </div>
 
                 <div className="flex justify-between items-end">
                     <div className="text-xs text-stone-400">
-                    <p className="font-medium text-stone-500">{tx.type === "PAYMENT" ? "Cash in" : "Cash out"}</p>
-                    <p className="text-[10px]">{new Date(tx.created_at).toLocaleString()}</p>
+                    {/* Using your custom formatter is safer than raw toLocaleString */}
+                    <p className="text-[10px]">{formatDateTime(tx.created_at)}</p>
                     </div>
-                    <p className={`text-lg font-bold ${tx.type === "PAYMENT" ? "text-emerald-600" : "text-red-500"}`}>
-                    {tx.type === "PAYMENT" ? "+" : "-"}₱{tx.amount.toLocaleString("en-PH")}
+                    <div className="text-right">
+                    <p className="text-[9px] font-bold text-stone-300 uppercase tracking-tighter">Total Paid</p>
+                    <p className={`text-lg font-bold text-emerald-600 leading-tight`}>
+                        ₱{totalAmountPaid.toLocaleString("en-PH")}
                     </p>
+                    </div>
                 </div>
-            </div>
-        ))}
+                </div>
+        )})}
         </div>
 
         {modalOpen && selectedTransaction && (
+            
         <div className="fixed inset-0 z-100 flex items-center justify-center bg-stone-900/60 backdrop-blur-sm p-4">
-            <div className="bg-white rounded-[2rem] border border-white w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="bg-white rounded-[2rem] border border-white w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                 
                 {/* Modal Header */}
                 <div className="px-6 py-5 border-b border-stone-50 flex justify-between items-center bg-stone-50/30">
@@ -665,25 +742,44 @@ const Transactions: React.FC = () => {
                 <div className="p-8">
                     {/* Primary Info: Amount & Status */}
                     <div className="text-center mb-8">
-                        <p className="text-[10px] font-bold text-stone-300 uppercase tracking-widest mb-1">Total Amount</p>
-                        <div className={`text-4xl font-extrabold tracking-tight ${selectedTransaction.type === "PAYMENT" ? "text-emerald-500" : "text-stone-700"}`}>
-                            {selectedTransaction.type === "PAYMENT" ? "+" : "-"}₱{selectedTransaction.amount.toLocaleString()}
+                        <p className="text-[10px] font-bold text-stone-300 uppercase tracking-widest mb-1">Amount Paid</p>
+                        <div className={`text-4xl font-extrabold tracking-tight text-emerald-500`}>
+                            ₱{totalAmountPaid.toLocaleString()}
                         </div>
-                        <div className="mt-4 flex justify-center">
-                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold border ${getStatusClass(selectedTransaction.status)}`}>
-                                {selectedTransaction.status}
-                            </span>
+                        <div className="mt-6 flex flex-col gap-4 items-center">
+                            {/* Payment Status Group */}
+                            <div className="flex flex-col items-center gap-1">
+                                <span className="text-[9px] font-bold text-stone-300 uppercase tracking-widest">
+                                    Payment Status
+                                </span>
+                                <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold border ${getStatusClass(selectedTransaction.status)}`}>
+                                    {selectedTransaction.status.charAt(0) + selectedTransaction.status.slice(1).toLowerCase()}
+                                </span>
+                            </div>
+
+                            {/* Settlement Status Group */}
+                            <div className="flex flex-col items-center gap-1">
+                                <span className="text-[9px] font-bold text-stone-300 uppercase tracking-widest">
+                                    Settlement Status
+                                </span>
+                                <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold border ${getSettlementStatusClass(selectedTransaction.settlement)}`}>
+                                    {formatSettlement(selectedTransaction.settlement)}
+                                </span>
+                            </div>
                         </div>
                     </div>
 
                     {/* Details Grid */}
                     <div className="grid grid-cols-1 gap-y-4">
+                        
                         {[
                             { label: "Reference ID", value: selectedTransaction.reference_id },
-                            { label: "Instapay Reference", value: selectedTransaction.instapay_reference || "N/A" },
-                            { label: "Transaction Type", value: selectedTransaction.type === "PAYMENT" ? "Cash in": "Cash out"},
+                            { label: "Amount", value: mobileAmount.toFixed(2),},
+                            { label: "Processing Fee", value: Number(mobileSendingFee).toFixed(2), },
+                            { label: "International Fee", value: Number(mobileIntlFee).toFixed(2), },
                             { label: "Created At", value: formatDateTime(selectedTransaction.created_at) },
                             { label: "Paid At", value: formatDateTime(selectedTransaction.paid_at) },
+                            { label: "Customer Name", value: selectedTransaction.card_details ?? "N/A"},
                         ].map((item, idx) => (
                             <div key={idx} className="flex justify-between items-start border-b border-stone-50 pb-3 last:border-0">
                                 <span className="text-[11px] font-bold text-stone-300 uppercase tracking-wider">{item.label}</span>
@@ -697,7 +793,7 @@ const Transactions: React.FC = () => {
                     {/* OPTION 2: Technical Metadata Section (Recommended) */}
                     <div className="mt-8 pt-5 border-t border-stone-50">
                         <div className="flex flex-col items-center gap-1.5">
-                            <span className="text-[9px] font-bold text-stone-300 uppercase tracking-[0.2em]">System Identifier</span>
+                            <span className="text-[9px] font-bold text-stone-300 uppercase tracking-[0.2em]">Transaction ID</span>
                             <span className="text-[10px] font-mono text-stone-400 bg-stone-50 px-3 py-1.5 rounded-lg select-all border border-stone-100">
                                 {selectedTransaction.transaction_id}
                             </span>
