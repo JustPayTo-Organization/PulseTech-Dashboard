@@ -638,7 +638,13 @@ const Transactions: React.FC = () => {
                     </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.created_at)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.updated_at)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-stone-400">
+                        {new Date(tx.updated_at).toLocaleString('en-PH', {
+                            timeZone: "Asia/Manila"
+                                }
+                            )
+                        }
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.card_details ?? null)}</td>
                 </tr>
                 )})
