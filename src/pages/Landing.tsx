@@ -39,7 +39,7 @@ type overviewType = {
 }
 
 const Landing = ({ clientName }: LandingProps) => {
-    const OVERVIEW_API_URL = import.meta.env.VITE_OVERVIEW_API_URL;
+    const OVERVIEW_API_URL = import.meta.env.VITE_OVERVIEW_API_URL || import.meta.env.VITE_API_URL;
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     // const [paymentData, setPaymentData] = useState<Payment | null>(null);
