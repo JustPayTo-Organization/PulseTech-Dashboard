@@ -298,7 +298,7 @@ const Landing = ({ clientName }: LandingProps) => {
                         <div className="grid sm:grid-cols-1 grid-cols-1 gap-6">
                             <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all">
                                 <PiHandDeposit className="rounded-2xl p-3 text-5xl bg-red-50 text-red-600 mb-4"/>
-                                <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Expected Settlement <span className="text-red-300">Date</span> </h4> 
+                                <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Expected Settlement <span className="text-red-300"></span> </h4> 
                                 <p className="text-2xl font-black mt-1 text-slate-800">
                                     {loading ? <Spinner /> : `₱${(overviewData?.expected ?? 0).toLocaleString("en-PH", {minimumFractionDigits: 2})}`}
                                 </p>
@@ -314,7 +314,7 @@ const Landing = ({ clientName }: LandingProps) => {
                     <div className="grid sm:grid-cols-1 grid-cols-1 gap-6">
                         <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all">
                             <LuGoal className="rounded-2xl p-3 text-5xl bg-green-100 text-green-500 mb-4"/>
-                            <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Total Settled <span className="text-red-300">Date</span></h4>
+                            <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Total Settled <span className="text-red-300"></span></h4>
                             <p className="text-2xl font-black mt-1 text-slate-800">
                                 {loading ? <Spinner /> : `₱${(overviewData?.settled ?? 0).toLocaleString("en-PH", {minimumFractionDigits: 2}) ?? "0.00"}`}
                             </p>
