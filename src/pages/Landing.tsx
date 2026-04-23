@@ -333,7 +333,10 @@ const Landing = ({ clientName }: LandingProps) => {
                                 <LuHandCoins className="rounded-2xl p-3 text-5xl bg-teal-100 text-teal-500 mb-4"/>
                         <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] whitespace-nowrap">Today's Transactions</h4>
                         <p className="text-2xl font-black mt-1 text-slate-800">
-                            {loading ? <Spinner/> : `${(overviewData?.total ?? 0)}`}
+                            ₱{loading ? <Spinner/> : `${(overviewData?.total ?? 0).toLocaleString('en-PH', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            })}`}
                         </p>
                     </div>
 
