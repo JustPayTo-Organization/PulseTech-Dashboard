@@ -16,7 +16,7 @@ export interface Transaction {
     };
     instapay_reference: string;
     merchant_id: string;
-    paid_at: string;
+    updated_at: string;
     reference_id: string;
     status: "SUCCESS" | "PENDING" | "FAILED" | "CLOSED";
     settlement: string | null;
@@ -564,7 +564,7 @@ const Transactions: React.FC = () => {
             <table className="min-w-full divide-y divide-stone-100">
             <thead className="bg-stone-50/50">
                 <tr>
-                {["Transaction ID", "Reference", "Amount", "Processing Fee", "International Fee", "Amount Paid", "Payment Status", "Settlement Status", "Created at","Paid At", "Customer Name"].map((header) => (
+                {["Transaction ID", "Reference", "Amount", "Processing Fee", "International Fee", "Amount Paid", "Payment Status", "Settlement Status", "Created at","Updated At", "Customer Name"].map((header) => (
                     <th key={header} className="px-6 py-4 text-left text-[10px] font-bold text-stone-400 uppercase tracking-widest whitespace-nowrap">{header}</th>
                 ))}
                 </tr>
@@ -638,7 +638,7 @@ const Transactions: React.FC = () => {
                     </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.created_at)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.paid_at)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.updated_at)}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.card_details ?? null)}</td>
                 </tr>
                 )})
@@ -783,7 +783,7 @@ const Transactions: React.FC = () => {
                             { label: "Processing Fee", value: Number(mobileSendingFee).toFixed(2), },
                             { label: "International Fee", value: Number(mobileIntlFee).toFixed(2), },
                             { label: "Created At", value: formatDateTime(selectedTransaction.created_at) },
-                            { label: "Paid At", value: formatDateTime(selectedTransaction.paid_at) },
+                            { label: "Updated At", value: formatDateTime(selectedTransaction.updated_at) },
                             { label: "Customer Name", value: selectedTransaction.card_details ?? "N/A"},
                         ].map((item, idx) => (
                             <div key={idx} className="flex justify-between items-start border-b border-stone-50 pb-3 last:border-0">

@@ -7,14 +7,14 @@ import { HiOutlineMenu } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import { useEffect, useRef, useState } from "react";
 
-export default function Sidebar() {
-    const API_URL = import.meta.env.VITE_API_URL;
+export default function Sidebar({ clientName }: { clientName: string }) {
+    // const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
     const location = useLocation();
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [clientName, setClientName] = useState<string>("");
-    const [_error, setError] = useState<string | undefined>(undefined);
-    const [_loading, setLoading] = useState(false);
+    // const [clientName, setClientName] = useState<string>("");
+    // const [_error, setError] = useState<string | undefined>(undefined);
+    // const [_loading, setLoading] = useState(false);
     
     const navItems = [
         { name: "Overview", path: "/landing", icon: LuBlocks },
@@ -22,29 +22,29 @@ export default function Sidebar() {
         // { name: "Withdrawal", path: "/withdrawal", icon: RiArrowLeftRightLine },
     ];  
 
-    useEffect(() => {
-        const fetchClientName = async () => {
-            try {
-                const accessToken = localStorage.getItem("accessToken");
-                const res = await fetch(`${API_URL}/dashboard/user`, {
-                    method: "GET", 
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${accessToken}`,
-                    },
-                });
-                if (!res.ok) throw new Error("Network response was not ok");
-                const json = await res.json();
-                setClientName(json.name);
-            } catch (err: unknown) {
-                if (err instanceof Error) setError(err.message);
-                else setError("Unknown error");
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchClientName();
-    }, [API_URL]);
+    // useEffect(() => {
+    //     const fetchClientName = async () => {
+    //         try {
+    //             const accessToken = localStorage.getItem("accessToken");
+    //             const res = await fetch(`${API_URL}/dashboard/user`, {
+    //                 method: "GET", 
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                     "Authorization": `Bearer ${accessToken}`,
+    //                 },
+    //             });
+    //             if (!res.ok) throw new Error("Network response was not ok");
+    //             const json = await res.json();
+    //             setClientName(json.name);
+    //         } catch (err: unknown) {
+    //             if (err instanceof Error) setError(err.message);
+    //             else setError("Unknown error");
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //     fetchClientName();
+    // }, [API_URL]);
 
     const handleSignOut = async () => {
         localStorage.removeItem('accessToken');

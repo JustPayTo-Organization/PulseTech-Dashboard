@@ -80,7 +80,7 @@ const DownloadQueueUI: React.FC = () => {
         "Type": TYPE_LABELS[tx.type],
         "Status": tx.status,
         "Created At": formatDateTime(tx.created_at),
-        "Paid At": formatDateTime(tx.paid_at),
+        "Updated At": formatDateTime(tx.updated_at),
       }));
 
       const worksheet = XLSX.utils.json_to_sheet(worksheetData);
