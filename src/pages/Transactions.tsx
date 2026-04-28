@@ -489,7 +489,7 @@ const Transactions: React.FC = () => {
                     </div>
 
                     {/* Type Select */}
-                    <div className="relative min-w-32.5 md:flex-1">
+                    {/* <div className="relative min-w-32.5 md:flex-1">
                         <select
                             value={typeInput}
                             onChange={(e) => setTypeInput(e.target.value)}
@@ -502,7 +502,7 @@ const Transactions: React.FC = () => {
                         <span className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-stone-300">
                             <HiChevronDown size={14} />
                         </span>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Action Buttons Grid on Mobile */}
