@@ -4,7 +4,7 @@ import { IoMdPerson, IoMdLock } from "react-icons/io";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { getDisplayNameFromUsername } from "../constants/clientDisplayMap";
 
-const Login: React.FC = () => {
+const Login: React.FC <{ setAccessToken: (token: string) => void }>= ({setAccessToken}) => {
     const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
@@ -39,6 +39,8 @@ const Login: React.FC = () => {
                     displayName,
                 })
             );
+            // Re set access token to refetch the client name in Layout
+            setAccessToken(data.access_token);
 
             navigate("/landing");
         } catch (err) {

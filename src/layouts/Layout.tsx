@@ -19,11 +19,21 @@ export default function Layout() {
     const hideSidebar = HIDE_SIDEBAR_ROUTES.includes(location.pathname);
 
     const API_URL = import.meta.env.VITE_API_URL;
+
+    const [accessToken, setAccessToken] = useState<string | null>(
+        localStorage.getItem("accessToken")
+    );
+
     const [clientName, setClientName] = useState("");
 
     useEffect(() => {
         const fetchClientName = async () => {
-            const accessToken = localStorage.getItem("accessToken");
+            
+            if (!accessToken) {
+                setClientName("");
+                return;
+            }
+
             const res = await fetch(`${API_URL}/dashboard/user`, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`,
@@ -35,15 +45,15 @@ export default function Layout() {
         };
 
         fetchClientName();
-    }, [API_URL]);
+    }, [API_URL, accessToken]);
 
     return (
         <div className="h-screen flex overflow-hidden">
-            {!hideSidebar && <Sidebar clientName={clientName}/>}
+            {!hideSidebar && <Sidebar clientName={clientName} setAccessToken={setAccessToken}/>}
             {/* Body */}
             <div className="flex-1 min-h-screen bg-slate-50/50 overflow-y-auto">
                 <Routes>
-                    <Route path="/login" element={<Login />} />
+                    <Route path="/login" element={<Login setAccessToken={setAccessToken}/>} />
                     <Route path="/" element={<Navigate to="/login" replace />} />
                     <Route element={<ProtectedRoute />}>
                         <Route path="/landing" element={<Landing clientName={clientName}/>} />

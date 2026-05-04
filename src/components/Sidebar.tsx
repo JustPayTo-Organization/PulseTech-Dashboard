@@ -7,7 +7,7 @@ import { HiOutlineMenu } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import { useEffect, useRef, useState } from "react";
 
-export default function Sidebar({ clientName }: { clientName: string }) {
+export default function Sidebar({ clientName, setAccessToken }: { clientName: string, setAccessToken: (token: string | null) => void; }) {
     // const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
     const location = useLocation();
@@ -48,6 +48,7 @@ export default function Sidebar({ clientName }: { clientName: string }) {
 
     const handleSignOut = async () => {
         localStorage.removeItem('accessToken');
+        setAccessToken(null); //triggers the reset of accessToken
         navigate("/login", { replace: true });
     };  
 
