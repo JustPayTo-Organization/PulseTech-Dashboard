@@ -88,10 +88,24 @@ const Transactions: React.FC = () => {
     const [_downloadQueue, _setDownloadQueue] = useState<DownloadJob[]>([]);
     const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
-    const totalAmountPaid =
+
+    let totalAmountPaid = 0;
+
+    if (selectedTransaction?.charged_fees_to === 'sender'){
+        totalAmountPaid =
         Number(selectedTransaction?.amount ?? 0) +
         Number(selectedTransaction?.fees?.sending ?? 0) +
         Number(selectedTransaction?.fees?.international_card ?? 0);
+    }else if (selectedTransaction?.charged_fees_to === 'recipient') {
+        totalAmountPaid =
+            Number(selectedTransaction?.amount ?? 0) -
+            Number(selectedTransaction?.fees?.sending ?? 0) -
+            Number(selectedTransaction?.fees?.international_card ?? 0);
+    }
+    // const totalAmountPaid =
+    //     Number(selectedTransaction?.amount ?? 0) +
+    //     Number(selectedTransaction?.fees?.sending ?? 0) +
+    //     Number(selectedTransaction?.fees?.international_card ?? 0);
   
     const mobileAmount = Number(selectedTransaction?.amount ?? 0);
     const mobileSendingFee = Number(selectedTransaction?.fees?.sending ?? 0);
