@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { addDownloadJob, getAllJobs, type DownloadJob } from "../components/database/db";
 
 export interface Transaction {
-    charged_fees_to: string;
     amount: number;
     charged_fees_to?: string;
     created_at: string;
