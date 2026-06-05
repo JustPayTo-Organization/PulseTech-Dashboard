@@ -9,6 +9,7 @@ import { addDownloadJob, getAllJobs, type DownloadJob } from "../components/data
 export interface Transaction {
     charged_fees_to: string;
     amount: number;
+    charged_fees_to?: string;
     created_at: string;
     error?: string;
     fees: {
@@ -313,11 +314,13 @@ const Transactions: React.FC = () => {
     }, []);
 
     const transactionsWithTotal = currentTransactions.map((tx) => ({
-    ...tx,
-    AmountPaidTotal:
-        Number(tx?.amount ?? 0) +
-        Number(tx?.fees?.sending ?? 0) +
-        Number(tx?.fees?.international_card ?? 0),
+        ...tx,
+        AmountPaidTotal: tx?.charged_fees_to == 'recipient'?
+        Number(tx?.amount ?? 0): (
+            Number(tx?.amount ?? 0) +
+            Number(tx?.fees?.sending ?? 0) +
+            Number(tx?.fees?.international_card ?? 0)
+        ),
     }));
 
     const formatSettlement = (value?: string | null | undefined) => {
