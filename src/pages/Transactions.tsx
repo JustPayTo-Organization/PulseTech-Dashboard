@@ -6,6 +6,13 @@ import { MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight, MdKeyboardArrowR
 import { useNavigate } from "react-router-dom";
 import { addDownloadJob, getAllJobs, type DownloadJob } from "../components/database/db";
 
+export interface CardDetails {
+    account_holder_name: string | null;
+    number: string | null;
+    type: string | null;
+    expiry: string | null;
+}
+
 export interface Transaction {
     amount: number;
     charged_fees_to?: string;
@@ -23,7 +30,7 @@ export interface Transaction {
     settlement: string | null;
     transaction_id: string;
     type: "PAYMENT" | "FUND_TRANSFER";
-    card_details?: string | null;
+    card_details?: CardDetails | null;
 }
 
 const formatDateTime = (dateStr: string | null) => {
@@ -654,7 +661,7 @@ const Transactions: React.FC = () => {
                             )
                         }
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.card_details ?? null)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-stone-400">{formatDateTime(tx.card_details?.account_holder_name ?? null)}</td>
                 </tr>
                 )})
             ) : (
@@ -799,7 +806,7 @@ const Transactions: React.FC = () => {
                             { label: "International Fee", value: Number(mobileIntlFee).toFixed(2), },
                             { label: "Created At", value: formatDateTime(selectedTransaction.created_at) },
                             { label: "Updated At", value: formatDateTime(selectedTransaction.updated_at) },
-                            { label: "Customer Name", value: selectedTransaction.card_details ?? "N/A"},
+                            { label: "Customer Name", value: selectedTransaction.card_details?.account_holder_name ?? "N/A"},
                         ].map((item, idx) => (
                             <div key={idx} className="flex justify-between items-start border-b border-stone-50 pb-3 last:border-0">
                                 <span className="text-[11px] font-bold text-stone-300 uppercase tracking-wider">{item.label}</span>
