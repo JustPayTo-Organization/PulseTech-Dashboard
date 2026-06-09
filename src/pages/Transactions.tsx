@@ -83,8 +83,10 @@ const Transactions: React.FC = () => {
     const [notification, setNotification] = useState<string | null>(null);
     const downloadDropdownRef = useRef<HTMLDivElement | null>(null);
     const [isDownloading, setIsDownloading] = useState(false);
-
-    const today = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
+    
+    const today = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Manila",
+    }).format(new Date()); // "YYYY-MM-DD"
     const [fromDate, setFromDate] = useState("");
     const [toDate, setToDate] = useState("");
 
@@ -230,9 +232,16 @@ const Transactions: React.FC = () => {
 
         try {
             const params = new URLSearchParams();
+            const getLocalDate = () => {
+                const date = new Date();
+                const offset = date.getTimezoneOffset();
 
-            params.append("start", appliedFromDate || new Date().toISOString().slice(0, 10));
-            params.append("end", appliedToDate || new Date().toISOString().slice(0, 10));
+                return new Date(date.getTime() - offset * 60000)
+                    .toISOString()
+                    .split("T")[0];
+            };
+            params.append("start", appliedFromDate || getLocalDate());
+            params.append("end", appliedToDate || getLocalDate());
             // params.append("page", (currentPage - 1).toString());
             // params.append("limit", rowsPerPage.toString());
             
@@ -764,7 +773,7 @@ const Transactions: React.FC = () => {
         </div>
 
         {modalOpen && selectedTransaction && (
-            
+
         <div className="fixed inset-0 z-100 flex items-center justify-center bg-stone-900/60 backdrop-blur-sm p-4">
             <div className="bg-white rounded-[2rem] border border-white w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                 
