@@ -18,7 +18,11 @@ export interface Transaction {
     charged_fees_to?: string;
     created_at: string;
     error?: string;
-    fees: {
+    fees?: {
+        sending: string;
+        international_card?: string;
+    };
+    fees_breakdown?: {
         sending: string;
         international_card?: string;
     };
@@ -96,19 +100,18 @@ const Transactions: React.FC = () => {
     const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
-    let totalAmountPaid = 0;
+    const modalBaseAmount = Number(selectedTransaction?.amount ?? 0);
 
-    if (selectedTransaction?.charged_fees_to === 'sender'){
-        totalAmountPaid =
-        Number(selectedTransaction?.amount ?? 0) +
-        Number(selectedTransaction?.fees?.sending ?? 0) +
-        Number(selectedTransaction?.fees?.international_card ?? 0);
-    }else if (selectedTransaction?.charged_fees_to === 'recipient') {
-        totalAmountPaid =
-            Number(selectedTransaction?.amount ?? 0) -
-            Number(selectedTransaction?.fees?.sending ?? 0) -
-            Number(selectedTransaction?.fees?.international_card ?? 0);
-    }
+    const modalSendingFee = Number(selectedTransaction?.fees_breakdown?.sending ?? 0);
+    const modalIntlFee = Number(selectedTransaction?.fees_breakdown?.international_card ?? 0);
+
+    const modalTotalFees = modalSendingFee + modalIntlFee;
+
+    const modalTotalAmountPaid =
+        selectedTransaction?.charged_fees_to === "recipient"
+            ? modalBaseAmount - modalTotalFees
+            : modalBaseAmount + modalTotalFees;
+
     // const totalAmountPaid =
     //     Number(selectedTransaction?.amount ?? 0) +
     //     Number(selectedTransaction?.fees?.sending ?? 0) +
@@ -601,17 +604,28 @@ const Transactions: React.FC = () => {
                 transactionsWithTotal.map((tx) => {
                 const isPending = tx?.settlement && tx.settlement !== "pending_payment";
                 
+                const baseAmount = Number(tx.amount ?? 0);
+                const sendingFee = Number(tx.fees_breakdown?.sending ?? 0);
+                const intlFee = Number(tx.fees_breakdown?.international_card ?? 0);
+                const totalFees = sendingFee + intlFee;
+
+                const totalAmountPaid =
+                    tx.charged_fees_to === "recipient"
+                        ? baseAmount - totalFees
+                        : baseAmount + totalFees;
                 return (
                 <tr key={tx.transaction_id} className="hover:bg-emerald-50/30 transition-colors">
                     <td className="px-6 py-4 text-stone-400 font-mono whitespace-nowrap">{tx.transaction_id ?? "N/A"}</td>
                     <td className="px-6 py-4 font-bold text-stone-700">{tx.reference_id}</td>
-                    <td className={`px-6 py-4 font-bold text-emerald-600`}>
-                        ₱{tx.amount.toLocaleString("en-PH", {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2,
-                                }   
-                            )
-                        }
+                   <td className="px-6 py-4 font-bold text-emerald-600">
+                        ₱{(
+                            tx.charged_fees_to === "recipient"
+                                ? totalAmountPaid
+                                : tx.amount
+                        ).toLocaleString("en-PH", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                        })}
                     </td>
                     <td className="px-6 py-4 font-bold text-emerald-600">
                         ₱{Number(
@@ -633,13 +647,11 @@ const Transactions: React.FC = () => {
                             maximumFractionDigits: 2,
                         })}
                     </td>
-                    <td className={`px-6 py-4 font-bold text-emerald-600`}>
-                        ₱{tx.AmountPaidTotal.toLocaleString("en-PH", {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2,
-                                }   
-                            )
-                        }
+                    <td className="px-6 py-4 font-bold text-emerald-600">
+                        ₱{totalAmountPaid.toLocaleString("en-PH", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                        })}
                     </td>
                     {/* Payment Status */}
                     <td className="px-6 py-4">
@@ -688,10 +700,15 @@ const Transactions: React.FC = () => {
             </div>
         ) : currentTransactions.map((tx) => {
 
-            const totalAmountPaid =
-                Number(tx.amount ?? 0) +
-                Number(tx.fees?.sending ?? 0) +
-                Number(tx.fees?.international_card ?? 0);
+            const baseAmount = Number(tx.amount ?? 0);
+                const sendingFee = Number(tx.fees_breakdown?.sending ?? 0);
+                const intlFee = Number(tx.fees_breakdown?.international_card ?? 0);
+                const totalFees = sendingFee + intlFee;
+
+                const totalAmountPaid =
+                    tx.charged_fees_to === "recipient"
+                        ? baseAmount - totalFees
+                        : baseAmount + totalFees;
 
             // Determine if settlement should have a border (consistent with your desktop logic)
             const isSettled = tx?.settlement && tx.settlement !== "pending_payment";
@@ -771,7 +788,7 @@ const Transactions: React.FC = () => {
                     <div className="text-center mb-8">
                         <p className="text-[10px] font-bold text-stone-300 uppercase tracking-widest mb-1">Amount Paid</p>
                         <div className={`text-4xl font-extrabold tracking-tight text-emerald-500`}>
-                            ₱{totalAmountPaid.toLocaleString()}
+                            ₱{modalTotalAmountPaid.toLocaleString()}
                         </div>
                         <div className="mt-6 flex flex-col gap-4 items-center">
                             {/* Payment Status Group */}
