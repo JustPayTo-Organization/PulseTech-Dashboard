@@ -18,12 +18,12 @@ export interface Transaction {
     charged_fees_to?: string;
     created_at: string;
     error?: string;
-    fees?: {
-        sending: string;
-        international_card?: string;
-    };
     fees_breakdown?: {
+        receiving: string;
         sending: string;
+        sms: string;
+        system: string;
+        witholding_tax: string;
         international_card?: string;
     };
     instapay_reference: string;
@@ -124,12 +124,12 @@ const Transactions: React.FC = () => {
     const mobileSendingFee =
         selectedTransaction?.charged_fees_to === "recipient"
             ? 0
-            : Number(selectedTransaction?.fees?.sending ?? 0);
+            : Number(selectedTransaction?.fees_breakdown?.sending ?? 0);
 
     const mobileIntlFee =
         selectedTransaction?.charged_fees_to === "recipient"
             ? 0
-            : Number(selectedTransaction?.fees?.international_card ?? 0);
+            : Number(selectedTransaction?.fees_breakdown?.international_card ?? 0);
 
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -345,8 +345,8 @@ const Transactions: React.FC = () => {
         AmountPaidTotal: tx?.charged_fees_to == 'recipient'?
         Number(tx?.amount ?? 0): (
             Number(tx?.amount ?? 0) +
-            Number(tx?.fees?.sending ?? 0) +
-            Number(tx?.fees?.international_card ?? 0)
+            Number(tx?.fees_breakdown?.sending ?? 0) +
+            Number(tx?.fees_breakdown?.international_card ?? 0)
         ),
     }));
 
@@ -640,7 +640,7 @@ const Transactions: React.FC = () => {
                         ₱{Number(
                             tx?.charged_fees_to === "recipient"
                                 ? 0
-                                : tx.fees?.sending ?? 0
+                                : tx.fees_breakdown?.sending ?? 0
                         ).toLocaleString("en-PH", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
@@ -650,7 +650,7 @@ const Transactions: React.FC = () => {
                         ₱{Number(
                             tx?.charged_fees_to === "recipient"
                                 ? 0
-                                : tx.fees?.international_card ?? 0
+                                : tx.fees_breakdown?.international_card ?? 0
                         ).toLocaleString("en-PH", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
