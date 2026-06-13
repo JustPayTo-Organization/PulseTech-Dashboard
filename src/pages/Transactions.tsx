@@ -122,15 +122,9 @@ const Transactions: React.FC = () => {
   
     const mobileAmount = Number(selectedTransaction?.amount ?? 0);
     
-    const mobileSendingFee =
-        selectedTransaction?.charged_fees_to === "recipient"
-            ? 0
-            : Number(selectedTransaction?.fees_breakdown?.sending ?? 0);
+    const mobileSendingFee = Number(selectedTransaction?.fees_breakdown?.sending ?? 0);
 
-    const mobileIntlFee =
-        selectedTransaction?.charged_fees_to === "recipient"
-            ? 0
-            : Number(selectedTransaction?.fees_breakdown?.international_card ?? 0);
+    const mobileIntlFee = Number(selectedTransaction?.fees_breakdown?.international_card ?? 0);
 
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -636,21 +630,15 @@ const Transactions: React.FC = () => {
                         })}
                     </td>
                     <td className="px-6 py-4 font-bold text-emerald-600">
-                        ₱{Number(
-                            tx?.charged_fees_to === "recipient"
-                                ? 0
-                                : tx.fees_breakdown?.sending ?? 0
-                        ).toLocaleString("en-PH", {
+                        ₱{Number( tx.fees_breakdown?.sending ?? 0)
+                            .toLocaleString("en-PH", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                         })}
                     </td>
                     <td className="px-6 py-4 font-bold text-emerald-600">
-                        ₱{Number(
-                            tx?.charged_fees_to === "recipient"
-                                ? 0
-                                : tx.fees_breakdown?.international_card ?? 0
-                        ).toLocaleString("en-PH", {
+                        ₱{Number(tx.fees_breakdown?.international_card ?? 0)
+                            .toLocaleString("en-PH", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                         })}
