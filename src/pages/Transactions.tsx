@@ -18,6 +18,7 @@ export interface Transaction {
     charged_fees_to?: string;
     created_at: string;
     error?: string;
+    fees?: string;
     fees_breakdown?: {
         receiving: string;
         sending: string;
@@ -103,7 +104,7 @@ const Transactions: React.FC = () => {
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
     const modalBaseAmount = Number(selectedTransaction?.amount ?? 0);
-
+    const modalPulse2Fees = Number(selectedTransaction?.fees ?? 0);
     const modalSendingFee = Number(selectedTransaction?.fees_breakdown?.sending ?? 0);
     const modalIntlFee = Number(selectedTransaction?.fees_breakdown?.international_card ?? 0);
 
@@ -111,7 +112,7 @@ const Transactions: React.FC = () => {
 
     const modalTotalAmountPaid =
         selectedTransaction?.charged_fees_to === "recipient"
-            ? modalBaseAmount - modalTotalFees
+            ? modalBaseAmount - modalPulse2Fees
             : modalBaseAmount + modalTotalFees;
 
     // const totalAmountPaid =
@@ -614,24 +615,22 @@ const Transactions: React.FC = () => {
                 const isPending = tx?.settlement && tx.settlement !== "pending_payment";
                 
                 const baseAmount = Number(tx.amount ?? 0);
+                const pulse2Fees = Number(tx.fees ?? 0);
                 const sendingFee = Number(tx.fees_breakdown?.sending ?? 0);
                 const intlFee = Number(tx.fees_breakdown?.international_card ?? 0);
                 const totalFees = sendingFee + intlFee;
 
                 const totalAmountPaid =
                     tx.charged_fees_to === "recipient"
-                        ? baseAmount - totalFees
+                        ? baseAmount - pulse2Fees
                         : baseAmount + totalFees;
                 return (
                 <tr key={tx.transaction_id} className="hover:bg-emerald-50/30 transition-colors">
                     <td className="px-6 py-4 text-stone-400 font-mono whitespace-nowrap">{tx.transaction_id ?? "N/A"}</td>
                     <td className="px-6 py-4 font-bold text-stone-700">{tx.reference_id}</td>
                    <td className="px-6 py-4 font-bold text-emerald-600">
-                        ₱{(
-                            tx.charged_fees_to === "recipient"
-                                ? totalAmountPaid
-                                : tx.amount
-                        ).toLocaleString("en-PH", {
+                        ₱{(tx.amount)
+                            .toLocaleString("en-PH", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                         })}
@@ -710,13 +709,14 @@ const Transactions: React.FC = () => {
         ) : currentTransactions.map((tx) => {
 
             const baseAmount = Number(tx.amount ?? 0);
+                const pulse2Fees = Number(tx.fees ?? 0);
                 const sendingFee = Number(tx.fees_breakdown?.sending ?? 0);
                 const intlFee = Number(tx.fees_breakdown?.international_card ?? 0);
                 const totalFees = sendingFee + intlFee;
 
                 const totalAmountPaid =
                     tx.charged_fees_to === "recipient"
-                        ? baseAmount - totalFees
+                        ? baseAmount - pulse2Fees
                         : baseAmount + totalFees;
 
             // Determine if settlement should have a border (consistent with your desktop logic)
