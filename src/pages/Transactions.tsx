@@ -121,15 +121,9 @@ const Transactions: React.FC = () => {
   
     const mobileAmount = Number(selectedTransaction?.amount ?? 0);
     
-    const mobileSendingFee =
-        selectedTransaction?.charged_fees_to === "recipient"
-            ? 0
-            : Number(selectedTransaction?.fees_breakdown?.sending ?? 0);
+    const mobileSendingFee = Number(selectedTransaction?.fees_breakdown?.sending ?? 0);
 
-    const mobileIntlFee =
-        selectedTransaction?.charged_fees_to === "recipient"
-            ? 0
-            : Number(selectedTransaction?.fees_breakdown?.international_card ?? 0);
+    const mobileIntlFee = Number(selectedTransaction?.fees_breakdown?.international_card ?? 0);
 
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -620,38 +614,29 @@ const Transactions: React.FC = () => {
 
                 const totalAmountPaid =
                     tx.charged_fees_to === "recipient"
-                        ? baseAmount - totalFees
+                        ? baseAmount
                         : baseAmount + totalFees;
                 return (
                 <tr key={tx.transaction_id} className="hover:bg-emerald-50/30 transition-colors">
                     <td className="px-6 py-4 text-stone-400 font-mono whitespace-nowrap">{tx.transaction_id ?? "N/A"}</td>
                     <td className="px-6 py-4 font-bold text-stone-700">{tx.reference_id}</td>
                    <td className="px-6 py-4 font-bold text-emerald-600">
-                        ₱{(
-                            tx.charged_fees_to === "recipient"
-                                ? totalAmountPaid
-                                : tx.amount
-                        ).toLocaleString("en-PH", {
+                        ₱{(tx.amount)
+                            .toLocaleString("en-PH", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                         })}
                     </td>
                     <td className="px-6 py-4 font-bold text-emerald-600">
-                        ₱{Number(
-                            tx?.charged_fees_to === "recipient"
-                                ? 0
-                                : tx.fees_breakdown?.sending ?? 0
-                        ).toLocaleString("en-PH", {
+                        ₱{Number( tx.fees_breakdown?.sending ?? 0)
+                            .toLocaleString("en-PH", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                         })}
                     </td>
                     <td className="px-6 py-4 font-bold text-emerald-600">
-                        ₱{Number(
-                            tx?.charged_fees_to === "recipient"
-                                ? 0
-                                : tx.fees_breakdown?.international_card ?? 0
-                        ).toLocaleString("en-PH", {
+                        ₱{Number(tx.fees_breakdown?.international_card ?? 0)
+                            .toLocaleString("en-PH", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                         })}
