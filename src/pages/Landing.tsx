@@ -56,7 +56,7 @@ const Landing = ({ clientName }: LandingProps) => {
     const [appliedFromDate, setAppliedFromDate] = useState(todayStr);
     const [appliedToDate, setAppliedToDate] = useState(todayStr);
 
-    const formatted_date = today.toLocaleDateString("en-US", {
+    const _formatted_date = today.toLocaleDateString("en-US", {
         month: "long",  // full month name
         day: "numeric",
         year: "numeric"
