@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { RiTimeLine } from "react-icons/ri";
 import { PiHandDeposit } from "react-icons/pi";
 import { LuGoal, LuHandCoins } from "react-icons/lu";
+import { RxCross2 } from "react-icons/rx";
+import { HiChevronDown } from "react-icons/hi";
+import { CiCalendar } from "react-icons/ci";
 // import { VscGraph } from "react-icons/vsc";
 // import { HiCash, HiChevronDown } from "react-icons/hi";
 // import { CiCalendar } from "react-icons/ci";
@@ -46,12 +49,12 @@ const Landing = ({ clientName }: LandingProps) => {
     // const [fundTransferData, setFundTransferData] = useState<FundTransfer | null>(null);
     const today = new Date();
     // const [selectedDate, setSelectedDate] = useState(today.toISOString().split("T")[0]);
-    // const todayStr = today.toISOString().split("T")[0];
+    const todayStr = today.toISOString().split("T")[0];
     const [ overviewData, setOverviewData] = useState<overviewType | null>(null);
-    // const [fromDate, setFromDate] = useState(today.toISOString().split("T")[0]);
-    // const [toDate, setToDate] = useState(today.toISOString().split("T")[0]);
-    // const [appliedFromDate, setAppliedFromDate] = useState(todayStr);
-    // const [appliedToDate, setAppliedToDate] = useState(todayStr);
+    const [fromDate, setFromDate] = useState(today.toISOString().split("T")[0]);
+    const [toDate, setToDate] = useState(today.toISOString().split("T")[0]);
+    const [appliedFromDate, setAppliedFromDate] = useState(todayStr);
+    const [appliedToDate, setAppliedToDate] = useState(todayStr);
 
     const formatted_date = today.toLocaleDateString("en-US", {
         month: "long",  // full month name
@@ -59,6 +62,21 @@ const Landing = ({ clientName }: LandingProps) => {
         year: "numeric"
     });
 
+    
+    // A helper function to format date strings
+    const formatDateDisplay = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+        });
+    };
+
+    // Derive the label in the component body
+    const labelDateSelected = appliedFromDate === appliedToDate 
+        ? formatDateDisplay(appliedFromDate) 
+        : `${formatDateDisplay(appliedFromDate)} – ${formatDateDisplay(appliedToDate)}`;
+        
     // const formatDate = (date: string) =>
     //     new Date(date).toLocaleDateString("en-US", {
     //         month: "long",
@@ -112,8 +130,16 @@ const Landing = ({ clientName }: LandingProps) => {
             //     setPaymentData(paymentJson);
             //     setFundTransferData(fundJson);
             // } 
+
+            // Construct the query string: ?start=2026-06-01&end=2026-06-26
+            const queryParams = new URLSearchParams({
+                start: appliedFromDate,
+                end: appliedToDate
+            }).toString();
+            
             try{
-                const res = await fetch(`${OVERVIEW_API_URL}/payment-page/overview`, {
+                const res = await fetch(`${OVERVIEW_API_URL}/payment-page/overview?${queryParams}`, {
+                        method: "GET",
                         headers: { 
                             "Accept": "application/json", 
                             "Authorization": `Bearer ${accessToken}` 
@@ -141,29 +167,29 @@ const Landing = ({ clientName }: LandingProps) => {
             }
         };
         fetchAll();
-    }, []);
-    // }, [appliedFromDate, appliedToDate]);
+    // }, []);
+    }, [appliedFromDate, appliedToDate]);
     
     // Please check if need both cash in and cash out for the success transactions
     // const totalSuccessTransactions = (paymentData?.SUCCESS ?? 0) + (fundTransferData?.SUCCESS ?? 0);
 
     // Apply Filter for the dates
 
-    // const handleApplyFilters = () => {
-    //     setAppliedFromDate(fromDate);
-    //     setAppliedToDate(toDate);
-    // };
+    const handleApplyFilters = () => {
+        setAppliedFromDate(fromDate);
+        setAppliedToDate(toDate);
+    };
 
-    // const handleClearFilters = () => {
-    //     const todayStr = today.toISOString().split("T")[0];
+    const handleClearFilters = () => {
+        const todayStr = today.toISOString().split("T")[0];
 
-    //     setAppliedFromDate(todayStr);
-    //     setAppliedToDate(todayStr);
+        setAppliedFromDate(todayStr);
+        setAppliedToDate(todayStr);
 
-    //     // optional: also reset the inputs visually
-    //     setFromDate(todayStr);
-    //     setToDate(todayStr);
-    // };
+        // optional: also reset the inputs visually
+        setFromDate(todayStr);
+        setToDate(todayStr);
+    };
 
     const Spinner = () => (
         <span className="inline-block w-8 h-8 border-4 border-slate-200 border-t-teal-500 rounded-full animate-spin" />
@@ -189,10 +215,10 @@ const Landing = ({ clientName }: LandingProps) => {
             )}
 
             {/* Date Selector */}
-            {/* <div className="flex flex-col md:flex-row gap-2 md:gap-5 lg:gap-5 xl:gap-8">
-                <div> */}
+            <div className="flex flex-col md:flex-row gap-2 md:gap-5 lg:gap-5 xl:gap-8">
+                <div>
                     {/* FROM DATE */}
-                    {/* <div 
+                    <div 
                         className="w-full sm:w-55 group relative flex items-center gap-3 bg-white px-4 py-2.5 rounded-2xl border border-stone-200 shadow-sm hover:border-emerald-400 hover:shadow-md hover:shadow-emerald-500/5 transition-all cursor-pointer"
                         onClick={(e) => (e.currentTarget.querySelector('input') as HTMLInputElement)?.showPicker()}
                     >
@@ -208,23 +234,23 @@ const Landing = ({ clientName }: LandingProps) => {
                                 onChange={(e) => setFromDate(e.target.value)}
                                 className="text-sm font-black text-stone-700 bg-transparent outline-none cursor-pointer appearance-none"
                             />
-                        </div> */}
+                        </div>
                         
                         {/* Subtle decorative arrow */}
-                        {/* <div className="text-stone-300 ml-auto">
+                        <div className="text-stone-300 ml-auto">
                             <HiChevronDown size={16} />
                         </div>
                     </div>
-                </div> */}
+                </div>
 
                 {/* Separator */}
-                {/* <div className="flex items-center justify-center text-sm font-semibold text-stone-400">
+                <div className="flex items-center justify-center text-sm font-semibold text-stone-400">
                     -
-                </div> */}
+                </div>
 
-                {/* <div> */}
+                <div>
                     {/* TO DATE */}
-                    {/* <div 
+                    <div 
                         className="w-full sm:w-55 group relative flex items-center gap-3 bg-white px-4 py-2.5 rounded-2xl border border-stone-200 shadow-sm hover:border-emerald-400 hover:shadow-md hover:shadow-emerald-500/5 transition-all cursor-pointer"
                         onClick={(e) => (e.currentTarget.querySelector('input') as HTMLInputElement)?.showPicker()}
                     >
@@ -240,27 +266,27 @@ const Landing = ({ clientName }: LandingProps) => {
                                 onChange={(e) => setToDate(e.target.value)}
                                 className="text-sm font-black text-stone-700 bg-transparent outline-none cursor-pointer appearance-none"
                             />
-                        </div> */}
+                        </div>
                         
                         {/* Subtle decorative arrow */}
-                        {/* <div className="text-stone-300 ml-auto">
+                        <div className="text-stone-300 ml-auto">
                             <HiChevronDown size={16} />
                         </div>
                     </div>
-                </div> */}
+                </div>
 
                 {/* Apply Button */}
-                {/* <div className="flex items-center">
+                <div className="flex items-center">
                     <button 
                         onClick={handleApplyFilters}
                         className="flex-1 md:flex-none bg-teal-500 text-white px-6 py-2 rounded-xl hover:bg-emerald-600 transition-all font-bold text-sm h-11 shadow-lg shadow-emerald-500/20 active:scale-[0.98]"
                     >
                         Apply
                     </button>
-                </div> */}
+                </div>
 
                 {/* Clear Button */}
-                {/* <div className="flex items-center">
+                <div className="flex items-center">
                     <button 
                         onClick={handleClearFilters}
                         className="flex-1 md:flex-none flex items-center justify-center bg-white text-stone-600 px-4 py-2 rounded-xl border border-stone-100 hover:bg-stone-50 transition-all font-bold text-sm h-11 shadow-sm active:scale-[0.98]"
@@ -268,7 +294,7 @@ const Landing = ({ clientName }: LandingProps) => {
                        <RxCross2 className="mr-2"/>Clear
                     </button>
                 </div>
-            </div> */}
+            </div>
             
 
             {/* Overview */}
@@ -284,7 +310,7 @@ const Landing = ({ clientName }: LandingProps) => {
                             <RiTimeLine className="rounded-2xl p-3 text-5xl bg-blue-50 text-blue-600 mb-4"/>
                             <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Date</h4>
                             <p className="text-2xl font-black mt-1 text-slate-800">
-                                {loading ? <Spinner /> : `${formatted_date}`}
+                                {loading ? <Spinner /> : labelDateSelected}
                             </p>
                         </div>
                     </div>
