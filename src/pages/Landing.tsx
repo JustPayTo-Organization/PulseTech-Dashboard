@@ -66,10 +66,30 @@ const Landing = ({ clientName }: LandingProps) => {
     };
 
     // Derive the label in the component body
-    const labelDateSelected = appliedFromDate === appliedToDate 
-        ? formatDateDisplay(appliedFromDate) 
-        : `${formatDateDisplay(appliedFromDate)} – ${formatDateDisplay(appliedToDate)}`;
+    const labelDateSelected = (() => {
+        if (!appliedFromDate || !appliedToDate) return "";
         
+        if (appliedFromDate === appliedToDate) {
+            return formatDateDisplay(appliedFromDate);
+        }
+
+        const fromDateObj = new Date(appliedFromDate);
+        const toDateObj = new Date(appliedToDate);
+
+        // If both dates share the same year, optimize the string format
+        if (fromDateObj.getFullYear() === toDateObj.getFullYear()) {
+            const fullFromLabel = formatDateDisplay(appliedFromDate); // e.g., "June 8, 2026"
+            const yearSuffix = `, ${fromDateObj.getFullYear()}`;
+            
+            // Remove the ", 2026" suffix from the start date label
+            const cleanFromLabel = fullFromLabel.replace(yearSuffix, ""); 
+            
+            return `${cleanFromLabel} – ${formatDateDisplay(appliedToDate)}`;
+        }
+
+        // Fallback if the range spans across different calendar years
+        return `${formatDateDisplay(appliedFromDate)} – ${formatDateDisplay(appliedToDate)}`;
+    })(); 
     // const formatDate = (date: string) =>
     //     new Date(date).toLocaleDateString("en-US", {
     //         month: "long",
@@ -188,6 +208,26 @@ const Landing = ({ clientName }: LandingProps) => {
         <span className="inline-block w-8 h-8 border-4 border-slate-200 border-t-teal-500 rounded-full animate-spin" />
     );
 
+    const [activeTab, setActiveTab] = useState<"all" | number | null> (null);
+    
+    const handleButtonDateFilter = (days: "all" | number) => {
+        const today = new Date();
+        const to = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        
+        // Set which button is active
+        setActiveTab(days);
+
+        if (days === 'all') {
+            setFromDate("");
+            setToDate("");
+        } else {
+            const from = new Date();
+            from.setDate(today.getDate() - days);
+            setFromDate(from.toISOString().split('T')[0]);
+            setToDate(to);
+        }
+    };
+    
     return (
         <div className="relative mt-12 lg:mt-0 p-4 md:p-8 bg-slate-50 min-h-screen font-sans overflow-hidden">
             {/* Global Background Accents to match the new component colors */}
@@ -208,83 +248,95 @@ const Landing = ({ clientName }: LandingProps) => {
             )}
 
             {/* Date Selector */}
-            <div className="flex flex-col md:flex-row gap-2 md:gap-5 lg:gap-5 xl:gap-8">
-                <div>
+            <div className="flex flex-col lg:flex-row gap-3 w-full items-center">
+                {/* Filter Inputs Container */}
+                <div className="flex flex-nowrap overflow-x-auto pb-2 md:pb-0 md:flex-wrap lg:flex-nowrap lg:flex-[5] gap-3 w-full scrollbar-hide items-center">
+                    
+                    {/* QUICK FILTERS */}
+                    <div className="flex gap-2 min-w-max lg:flex-none">
+                        <button
+                            onClick={() => handleButtonDateFilter(7)}
+                            className={`px-3 py-2 text-xs font-semibold rounded-xl transition-all border ${
+                                activeTab === 7
+                                    ? 'bg-emerald-500 text-white border-emerald-500 shadow-sm'
+                                    : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                            }`}
+                        >
+                            Last 7 Days
+                        </button>
+
+                        <button
+                            onClick={() => handleButtonDateFilter(20)}
+                            className={`px-3 py-2 text-xs font-semibold rounded-xl transition-all border ${
+                                activeTab === 20
+                                    ? 'bg-emerald-500 text-white border-emerald-500 shadow-sm'
+                                    : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                            }`}
+                        >
+                            Last 20 Days
+                        </button>
+                    </div>
+
                     {/* FROM DATE */}
-                    <div 
-                        className="w-full sm:w-55 group relative flex items-center gap-3 bg-white px-4 py-2.5 rounded-2xl border border-stone-200 shadow-sm hover:border-emerald-400 hover:shadow-md hover:shadow-emerald-500/5 transition-all cursor-pointer"
-                        onClick={(e) => (e.currentTarget.querySelector('input') as HTMLInputElement)?.showPicker()}
+                    <div
+                        className="relative min-w-35 md:flex-1 lg:flex-[1.5]"
+                        onClick={(e) => {
+                            if ((e.target as HTMLElement).tagName !== "INPUT") {
+                                const input = (e.currentTarget.querySelector("input") as HTMLInputElement);
+                                input?.showPicker?.();
+                            }
+                        }}
                     >
-                        <div className="bg-emerald-50 p-2 rounded-xl text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
-                            <CiCalendar size={20} />
-                        </div>
-                        
-                        <div className="flex">
-                            <input 
-                                type="date" 
-                                value={fromDate}
-                                max={new Date().toISOString().split("T")[0]} // Prevents future dates
-                                onChange={(e) => setFromDate(e.target.value)}
-                                className="text-sm font-black text-stone-700 bg-transparent outline-none cursor-pointer appearance-none"
-                            />
-                        </div>
-                        
-                        {/* Subtle decorative arrow */}
-                        <div className="text-stone-300 ml-auto">
-                            <HiChevronDown size={16} />
-                        </div>
+                        <span className="absolute inset-y-0 left-2.5 flex items-center text-emerald-400">
+                            <CiCalendar size={18} />
+                        </span>
+                        <input
+                            type="date"
+                            value={fromDate}
+                            max={toDate || new Date().toISOString().split("T")[0]}
+                            onChange={(e) => setFromDate(e.target.value)}
+                            className="w-full border border-stone-200 rounded-xl pl-9 px-2 py-2 text-sm focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-400 outline-none text-stone-600 transition-all font-semibold"
+                        />
                     </div>
-                </div>
 
-                {/* Separator */}
-                <div className="flex items-center justify-center text-sm font-semibold text-stone-400">
-                    -
-                </div>
-
-                <div>
                     {/* TO DATE */}
-                    <div 
-                        className="w-full sm:w-55 group relative flex items-center gap-3 bg-white px-4 py-2.5 rounded-2xl border border-stone-200 shadow-sm hover:border-emerald-400 hover:shadow-md hover:shadow-emerald-500/5 transition-all cursor-pointer"
-                        onClick={(e) => (e.currentTarget.querySelector('input') as HTMLInputElement)?.showPicker()}
+                    <div
+                        className="relative min-w-35 md:flex-1 lg:flex-[1.5]"
+                        onClick={(e) => {
+                            if ((e.target as HTMLElement).tagName !== "INPUT") {
+                                const input = (e.currentTarget.querySelector("input") as HTMLInputElement);
+                                input?.showPicker?.();
+                            }
+                        }}
                     >
-                        <div className="bg-emerald-50 p-2 rounded-xl text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
-                            <CiCalendar size={20} />
-                        </div>
-                        
-                        <div className="flex">
-                            <input 
-                                type="date" 
-                                value={toDate}
-                                max={new Date().toISOString().split("T")[0]} // Prevents future dates
-                                onChange={(e) => setToDate(e.target.value)}
-                                className="text-sm font-black text-stone-700 bg-transparent outline-none cursor-pointer appearance-none"
-                            />
-                        </div>
-                        
-                        {/* Subtle decorative arrow */}
-                        <div className="text-stone-300 ml-auto">
-                            <HiChevronDown size={16} />
-                        </div>
+                        <span className="absolute inset-y-0 left-2.5 flex items-center text-emerald-400">
+                            <CiCalendar size={18} />
+                        </span>
+                        <input
+                            type="date"
+                            value={toDate}
+                            min={fromDate || undefined}
+                            max={new Date().toISOString().split("T")[0]}
+                            onChange={(e) => setToDate(e.target.value)}
+                            className="w-full border border-stone-200 rounded-xl pl-9 px-2 py-2 text-sm focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-400 outline-none text-stone-600 transition-all font-semibold"
+                        />
                     </div>
                 </div>
 
-                {/* Apply Button */}
-                <div className="flex items-center">
-                    <button 
+                {/* Action Buttons */}
+                <div className="flex md:flex w-full md:w-full lg:flex-[2] gap-2 items-center border-t lg:border-t-0 pt-3 lg:pt-0 border-stone-100">
+                    <button
                         onClick={handleApplyFilters}
-                        className="flex-1 md:flex-none bg-teal-500 text-white px-6 py-2 rounded-xl hover:bg-emerald-600 transition-all font-bold text-sm h-11 shadow-lg shadow-emerald-500/20 active:scale-[0.98]"
+                        className="bg-teal-500 text-white px-4 py-2 rounded-xl hover:bg-emerald-600 transition-all font-bold text-sm h-10 shadow-lg shadow-emerald-500/20 active:scale-[0.98] w-full lg:flex-1"
                     >
-                        Apply
+                        Filter
                     </button>
-                </div>
 
-                {/* Clear Button */}
-                <div className="flex items-center">
-                    <button 
+                    <button
                         onClick={handleClearFilters}
-                        className="flex-1 md:flex-none flex items-center justify-center bg-white text-stone-600 px-4 py-2 rounded-xl border border-stone-100 hover:bg-stone-50 transition-all font-bold text-sm h-11 shadow-sm active:scale-[0.98]"
+                        className="text-stone-600 bg-white border border-stone-200 hover:bg-stone-50 transition-colors px-4 py-2 rounded-xl font-bold text-sm h-10 flex items-center justify-center gap-1 w-full lg:flex-1"
                     >
-                       <RxCross2 className="mr-2"/>Clear
+                        <RxCross2 /> Clear
                     </button>
                 </div>
             </div>
@@ -298,11 +350,14 @@ const Landing = ({ clientName }: LandingProps) => {
                     <h3 className="text-slate-800 font-black mb-5 text-sm uppercase tracking-widest flex items-center gap-2">
                         <span className="w-1.5 h-6 bg-teal-500 rounded-full"></span> Overview
                     </h3>
-                    <div className="grid sm:grid-cols-1 grid-cols-1 gap-6">
-                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all">
-                            <RiTimeLine className="rounded-2xl p-3 text-5xl bg-blue-50 text-blue-600 mb-4"/>
+                    <div className="grid grid-cols-1 gap-6 w-full table-layout-fixed">
+                        {/* min-w-0 prevents the grid item from stretching beyond its parent */}
+                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all min-w-0 overflow-hidden">
+                            <RiTimeLine className="rounded-2xl p-3 text-5xl bg-blue-50 text-blue-600 mb-4 flex-shrink-0"/>
                             <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Date</h4>
-                            <p className="text-2xl font-black mt-1 text-slate-800">
+                            
+                            {/* Responsive text using clamp ensures it shrinks instead of expanding the card wrapper */}
+                            <p className="text-[clamp(1.1rem,4vw,1.5rem)] font-black mt-1 text-slate-800 whitespace-nowrap overflow-hidden text-ellipsis" title={labelDateSelected}>
                                 {loading ? <Spinner /> : labelDateSelected}
                             </p>
                         </div>
