@@ -390,7 +390,7 @@ const Landing = ({ clientName }: LandingProps) => {
             
 
             {/* Overview */}
-            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-4 gap-8 mt-10">
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-4 gap-0 lg:gap-8 mt-10">
 
                 <div>
                     {/* Last Login */}
