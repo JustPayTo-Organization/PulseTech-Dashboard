@@ -102,14 +102,14 @@ const Landing = ({ clientName }: LandingProps) => {
         if (fromYear === toYear) {
             return {
                 text: `${fromMonth} ${fromDay} – ${toMonth} ${toDay}, ${fromYear}`,
-                className: "text-base lg:text-[11px] xl:text-base 2xl:text-lg"
+                className: "text-base lg:text-[11px] xl:text-base 2xl:text-xl"
             };
         }
 
         // SCENARIO 3: Different Years -> "Dec 30, 2026 – Jan 2, 2027" (Smallest)
         return {
             text: `${fromMonth} ${fromDay}, ${fromYear} – ${toMonth} ${toDay}, ${toYear}`,
-            className: "text-xs lg:text-[10px] xl:text-xs 2xl:text-sm"
+            className: "text-xs lg:text-[10px] xl:text-sm 2xl:text-base"
         };
     })();
     // const formatDate = (date: string) =>
