@@ -5,6 +5,7 @@ import { LuGoal, LuHandCoins } from "react-icons/lu";
 import { RxCross2 } from "react-icons/rx";
 // import { HiChevronDown } from "react-icons/hi";
 import { CiCalendar } from "react-icons/ci";
+import React from "react";
 // import { VscGraph } from "react-icons/vsc";
 // import { HiCash, HiChevronDown } from "react-icons/hi";
 // import { CiCalendar } from "react-icons/ci";
@@ -66,30 +67,51 @@ const Landing = ({ clientName }: LandingProps) => {
     };
 
     // Derive the label in the component body
-    const labelDateSelected = (() => {
-        if (!appliedFromDate || !appliedToDate) return "";
+    const dateDisplayConfig = (() => {
+        if (!appliedFromDate || !appliedToDate) {
+            return { text: "", className: "text-2xl lg:text-[15px] xl:text-2xl" };
+        }
         
+        // SCENARIO 0: Same exact day (Shortest text -> Largest font size)
         if (appliedFromDate === appliedToDate) {
-            return formatDateDisplay(appliedFromDate);
+            return {
+                text: formatDateDisplay(appliedFromDate),
+                className: "text-2xl lg:text-[15px] xl:text-2xl"
+            };
         }
 
         const fromDateObj = new Date(appliedFromDate);
         const toDateObj = new Date(appliedToDate);
 
-        // If both dates share the same year, optimize the string format
-        if (fromDateObj.getFullYear() === toDateObj.getFullYear()) {
-            const fullFromLabel = formatDateDisplay(appliedFromDate); // e.g., "June 8, 2026"
-            const yearSuffix = `, ${fromDateObj.getFullYear()}`;
-            
-            // Remove the ", 2026" suffix from the start date label
-            const cleanFromLabel = fullFromLabel.replace(yearSuffix, ""); 
-            
-            return `${cleanFromLabel} – ${formatDateDisplay(appliedToDate)}`;
+        const fromYear = fromDateObj.getFullYear();
+        const toYear = toDateObj.getFullYear();
+        const fromMonth = fromDateObj.toLocaleString('en-US', { month: 'short' });
+        const toMonth = toDateObj.toLocaleString('en-US', { month: 'short' });
+        const fromDay = fromDateObj.getDate();
+        const toDay = toDateObj.getDate();
+
+        // SCENARIO 1: Same Month, Same Year -> "June 23–30, 2026" (Small)
+        if (fromYear === toYear && fromMonth === toMonth) {
+            return {
+                text: `${fromMonth} ${fromDay}–${toDay}, ${fromYear}`,
+                className: "text-xl lg:text-[13px] xl:text-xl 2xl:text-2xl"
+            };
         }
 
-        // Fallback if the range spans across different calendar years
-        return `${formatDateDisplay(appliedFromDate)} – ${formatDateDisplay(appliedToDate)}`;
-    })(); 
+        // SCENARIO 2: Different Month, Same Year -> "Feb 4 – Jun 30, 2026" (Smaller)
+        if (fromYear === toYear) {
+            return {
+                text: `${fromMonth} ${fromDay} – ${toMonth} ${toDay}, ${fromYear}`,
+                className: "text-base lg:text-[11px] xl:text-base 2xl:text-lg"
+            };
+        }
+
+        // SCENARIO 3: Different Years -> "Dec 30, 2026 – Jan 2, 2027" (Smallest)
+        return {
+            text: `${fromMonth} ${fromDay}, ${fromYear} – ${toMonth} ${toDay}, ${toYear}`,
+            className: "text-xs lg:text-[10px] xl:text-xs 2xl:text-sm"
+        };
+    })();
     // const formatDate = (date: string) =>
     //     new Date(date).toLocaleDateString("en-US", {
     //         month: "long",
@@ -228,8 +250,33 @@ const Landing = ({ clientName }: LandingProps) => {
         }
     };
     
+    const [dimensions, setDimensions] = React.useState({
+        width: typeof window !== 'undefined' ? window.innerWidth : 0,
+        height: typeof window !== 'undefined' ? window.innerHeight : 0,
+        });
+
+        React.useEffect(() => {
+        const handleResize = () => {
+            setDimensions({
+            width: window.innerWidth,
+            height: window.innerHeight,
+            });
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     return (
         <div className="relative mt-12 lg:mt-0 p-4 md:p-8 bg-slate-50 min-h-screen font-sans overflow-hidden">
+            {/* Screen Dimension Indicator */}
+            <div className="fixed bottom-4 right-4 z-50 bg-slate-900/90 text-white font-mono text-[11px] px-3 py-1.5 rounded-full shadow-lg border border-slate-700 pointer-events-none tracking-wider">
+                {dimensions.width}px × {dimensions.height}px
+                <span className="ml-2 px-1 py-0.5 bg-teal-500 text-slate-950 font-bold rounded text-[9px] uppercase">
+                    {dimensions.width >= 1536 ? '2xl' : dimensions.width >= 1280 ? 'xl' : dimensions.width >= 1024 ? 'lg' : dimensions.width >= 768 ? 'md' : dimensions.width >= 640 ? 'sm' : 'xs'}
+                </span>
+            </div>
+
             {/* Global Background Accents to match the new component colors */}
             <div className="absolute top-0 right-0 w-[40%] h-[40%] rounded-full bg-teal-100/30 blur-[120px] pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-[40%] h-[40%] rounded-full bg-purple-100/30 blur-[120px] pointer-events-none" />
@@ -358,13 +405,9 @@ const Landing = ({ clientName }: LandingProps) => {
                                 <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Date</h4>
                             </div>
                             
-                            {/* Fixed line-height to 'leading-7' to maintain box boundaries even when text shrinks */}
-                            <p className={`font-black mt-1 text-slate-800 whitespace-nowrap overflow-visible tracking-tight leading-7 ${
-                                appliedFromDate !== appliedToDate 
-                                    ? 'text-lg lg:text-[12px] xl:text-base 2xl:text-xl' 
-                                    : 'text-2xl lg:text-[15px] xl:text-2xl'
-                            }`}>
-                                {loading ? <Spinner /> : labelDateSelected}
+                            {/* The text sizing classes are now injected straight from our config object */}
+                            <p className={`font-black mt-1 text-slate-800 whitespace-nowrap overflow-visible tracking-tight leading-7 ${dateDisplayConfig.className}`}>
+                                {loading ? <Spinner /> : dateDisplayConfig.text}
                             </p>
                         </div>
                     </div>
