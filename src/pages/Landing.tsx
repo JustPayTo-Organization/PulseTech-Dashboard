@@ -350,14 +350,20 @@ const Landing = ({ clientName }: LandingProps) => {
                     <h3 className="text-slate-800 font-black mb-5 text-sm uppercase tracking-widest flex items-center gap-2">
                         <span className="w-1.5 h-6 bg-teal-500 rounded-full"></span> Overview
                     </h3>
-                    <div className="grid grid-cols-1 gap-6 w-full table-layout-fixed">
-                        {/* min-w-0 prevents the grid item from stretching beyond its parent */}
-                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all min-w-0 overflow-hidden">
-                            <RiTimeLine className="rounded-2xl p-3 text-5xl bg-blue-50 text-blue-600 mb-4 flex-shrink-0"/>
-                            <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Date</h4>
+                    <div className="grid sm:grid-cols-1 grid-cols-1 gap-6">
+                        {/* Added 'min-h-[156px] flex flex-col justify-between' to match typical height of the other cards */}
+                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all min-h-[156px] flex flex-col justify-between">
+                            <div>
+                                <RiTimeLine className="rounded-2xl p-3 text-5xl bg-blue-50 text-blue-600 mb-4 flex-shrink-0"/>
+                                <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Date</h4>
+                            </div>
                             
-                            {/* Responsive text using clamp ensures it shrinks instead of expanding the card wrapper */}
-                            <p className="text-[clamp(1.1rem,4vw,1.5rem)] font-black mt-1 text-slate-800 whitespace-nowrap overflow-hidden text-ellipsis" title={labelDateSelected}>
+                            {/* Fixed line-height to 'leading-7' to maintain box boundaries even when text shrinks */}
+                            <p className={`font-black mt-1 text-slate-800 whitespace-nowrap overflow-visible tracking-tight leading-7 ${
+                                appliedFromDate !== appliedToDate 
+                                    ? 'text-lg lg:text-[12px] xl:text-base 2xl:text-xl' 
+                                    : 'text-2xl lg:text-[15px] xl:text-2xl'
+                            }`}>
                                 {loading ? <Spinner /> : labelDateSelected}
                             </p>
                         </div>
@@ -369,15 +375,17 @@ const Landing = ({ clientName }: LandingProps) => {
                     <h3 className="text-slate-800 font-black mb-0 sm:mb-5 text-sm uppercase tracking-widest flex items-center gap-2">
                         <span className="w-1.5 h-6 rounded-full"></span>
                     </h3>
-                        <div className="grid sm:grid-cols-1 grid-cols-1 gap-6">
-                            <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all">
+                    <div className="grid sm:grid-cols-1 grid-cols-1 gap-6">
+                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all min-h-[156px] flex flex-col justify-between">
+                            <div>
                                 <PiHandDeposit className="rounded-2xl p-3 text-5xl bg-red-50 text-red-600 mb-4"/>
-                                <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Expected Settlement <span className="text-red-300"></span> </h4> 
-                                <p className="text-2xl font-black mt-1 text-slate-800">
-                                    {loading ? <Spinner /> : `₱${(overviewData?.expected ?? 0).toLocaleString("en-PH", {minimumFractionDigits: 2})}`}
-                                </p>
+                                <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Expected Settlement</h4> 
                             </div>
+                            <p className="text-2xl font-black mt-1 text-slate-800 leading-7">
+                                {loading ? <Spinner /> : `₱${(overviewData?.expected ?? 0).toLocaleString("en-PH", {minimumFractionDigits: 2})}`}
+                            </p>
                         </div>
+                    </div>
                 </div>
 
                 {/* Total Settled */}
@@ -386,14 +394,15 @@ const Landing = ({ clientName }: LandingProps) => {
                         <span className="w-1.5 h-6 rounded-full"></span>
                     </h3>
                     <div className="grid sm:grid-cols-1 grid-cols-1 gap-6">
-                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all">
-                            <LuGoal className="rounded-2xl p-3 text-5xl bg-green-100 text-green-500 mb-4"/>
-                            <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Total Settled <span className="text-red-300"></span></h4>
-                            <p className="text-2xl font-black mt-1 text-slate-800">
+                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all min-h-[156px] flex flex-col justify-between">
+                            <div>
+                                <LuGoal className="rounded-2xl p-3 text-5xl bg-green-100 text-green-500 mb-4"/>
+                                <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Total Settled</h4>
+                            </div>
+                            <p className="text-2xl font-black mt-1 text-slate-800 leading-7">
                                 {loading ? <Spinner /> : `₱${(overviewData?.settled ?? 0).toLocaleString("en-PH", {minimumFractionDigits: 2}) ?? "0.00"}`}
                             </p>
                         </div>
-
                     </div>
                 </div>
 
@@ -403,17 +412,18 @@ const Landing = ({ clientName }: LandingProps) => {
                         <span className="w-1.5 h-6 rounded-full"></span>
                     </h3>
                     <div className="grid sm:grid-cols-1 grid-cols-1 gap-6">
-                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all">
+                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all min-h-[156px] flex flex-col justify-between">
+                            <div>
                                 <LuHandCoins className="rounded-2xl p-3 text-5xl bg-teal-100 text-teal-500 mb-4"/>
-                        <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] whitespace-nowrap">Today's Transactions</h4>
-                        <p className="text-2xl font-black mt-1 text-slate-800">
-                            ₱{loading ? <Spinner/> : `${(overviewData?.total ?? 0).toLocaleString('en-PH', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            })}`}
-                        </p>
-                    </div>
-
+                                <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] whitespace-nowrap">Today's Transactions</h4>
+                            </div>
+                            <p className="text-2xl font-black mt-1 text-slate-800 leading-7">
+                                ₱{loading ? <Spinner/> : `${(overviewData?.total ?? 0).toLocaleString('en-PH', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                })}`}
+                            </p>
+                        </div>
                     </div>
                 </div>
 
