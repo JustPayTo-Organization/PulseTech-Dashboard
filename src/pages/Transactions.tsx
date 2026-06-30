@@ -531,49 +531,49 @@ const Transactions: React.FC = () => {
                     </button>
 
                     <div ref={downloadDropdownRef} className="relative col-span-2 w-full lg:flex-[1.2]">
-    <button
-        onClick={() => setDownloadMenuOpen(prev => !prev)}
-        className="relative w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl shadow-lg shadow-emerald-600/20 transition-all font-bold text-sm h-10 flex items-center justify-center active:scale-[0.98]"
-    >
-        {/* The text remains centered because the parent is 'justify-center' */}
-        <span>Download</span>
-        
-        {/* Icon adjustment: 
-           1. 'absolute' keeps it from pushing the text.
-           2. 'right-3' keeps it consistent on all screens.
-           3. 'flex items-center' + 'inset-y-0' ensures vertical centering regardless of button height.
-        */}
-        <div className="hidden xl:flex absolute right-3 inset-y-0 items-center pointer-events-none">
-            <HiChevronDown 
-                size={16} 
-                className={`transition-transform duration-200 ${downloadMenuOpen ? 'rotate-180' : ''}`} 
-            />
-        </div>
-    </button>
-    
-    {downloadMenuOpen && (
-                                <div className="absolute right-0 top-full mb-2 md:bottom-auto md:mt-2 w-full bg-white border border-stone-100 rounded-xl shadow-2xl z-50 py-1 overflow-hidden">
-                                    <button
-                                        disabled={isDownloading}
-                                        onClick={() => { handleQueueDownload(); setDownloadMenuOpen(false); }}
-                                        className={`w-full text-left px-4 py-2.5 text-sm border-b border-stone-50 ${
-                                            isDownloading
-                                                ? "opacity-50 cursor-not-allowed text-stone-300"
-                                                : "hover:bg-emerald-50 hover:text-emerald-600 text-stone-600"
-                                        }`}
-                                    >
-                                        Queue Download
-                                    </button>
-                                    <button
-                                        // onClick={() => navigate("/download-queue", { state: { downloadQueue } })}
-                                        onClick={() => navigate("/download-queue")}
-                                        className="w-full text-left px-4 py-2.5 text-sm hover:bg-emerald-50 hover:text-emerald-600 text-stone-600 transition-colors"
-                                    >
-                                        View Queue
-                                    </button>
-                                </div>
-                            )}
-</div>
+                        <button
+                            onClick={() => setDownloadMenuOpen(prev => !prev)}
+                            className="relative w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl shadow-lg shadow-emerald-600/20 transition-all font-bold text-sm h-10 flex items-center justify-center active:scale-[0.98]"
+                        >
+                            {/* The text remains centered because the parent is 'justify-center' */}
+                            <span>Download</span>
+                            
+                            {/* Icon adjustment: 
+                            1. 'absolute' keeps it from pushing the text.
+                            2. 'right-3' keeps it consistent on all screens.
+                            3. 'flex items-center' + 'inset-y-0' ensures vertical centering regardless of button height.
+                            */}
+                            <div className="hidden xl:flex absolute right-3 inset-y-0 items-center pointer-events-none">
+                                <HiChevronDown 
+                                    size={16} 
+                                    className={`transition-transform duration-200 ${downloadMenuOpen ? 'rotate-180' : ''}`} 
+                                />
+                            </div>
+                        </button>
+                        
+                        {downloadMenuOpen && (
+                                                    <div className="absolute right-0 top-full mb-2 md:bottom-auto md:mt-2 w-full bg-white border border-stone-100 rounded-xl shadow-2xl z-50 py-1 overflow-hidden">
+                                                        <button
+                                                            disabled={isDownloading}
+                                                            onClick={() => { handleQueueDownload(); setDownloadMenuOpen(false); }}
+                                                            className={`w-full text-left px-4 py-2.5 text-sm border-b border-stone-50 ${
+                                                                isDownloading
+                                                                    ? "opacity-50 cursor-not-allowed text-stone-300"
+                                                                    : "hover:bg-emerald-50 hover:text-emerald-600 text-stone-600"
+                                                            }`}
+                                                        >
+                                                            Queue Download
+                                                        </button>
+                                                        <button
+                                                            // onClick={() => navigate("/download-queue", { state: { downloadQueue } })}
+                                                            onClick={() => navigate("/download-queue")}
+                                                            className="w-full text-left px-4 py-2.5 text-sm hover:bg-emerald-50 hover:text-emerald-600 text-stone-600 transition-colors"
+                                                        >
+                                                            View Queue
+                                                        </button>
+                                                    </div>
+                                                )}
+                    </div>
                 </div>
             </div>
         </div>

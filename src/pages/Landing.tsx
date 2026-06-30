@@ -3,8 +3,9 @@ import { RiTimeLine } from "react-icons/ri";
 import { PiHandDeposit } from "react-icons/pi";
 import { LuGoal, LuHandCoins } from "react-icons/lu";
 import { RxCross2 } from "react-icons/rx";
-import { HiChevronDown } from "react-icons/hi";
+// import { HiChevronDown } from "react-icons/hi";
 import { CiCalendar } from "react-icons/ci";
+import React from "react";
 // import { VscGraph } from "react-icons/vsc";
 // import { HiCash, HiChevronDown } from "react-icons/hi";
 // import { CiCalendar } from "react-icons/ci";
@@ -66,10 +67,51 @@ const Landing = ({ clientName }: LandingProps) => {
     };
 
     // Derive the label in the component body
-    const labelDateSelected = appliedFromDate === appliedToDate 
-        ? formatDateDisplay(appliedFromDate) 
-        : `${formatDateDisplay(appliedFromDate)} – ${formatDateDisplay(appliedToDate)}`;
+    const dateDisplayConfig = (() => {
+        if (!appliedFromDate || !appliedToDate) {
+            return { text: "", className: "text-2xl lg:text-[15px] xl:text-2xl" };
+        }
         
+        // SCENARIO 0: Same exact day (Shortest text -> Largest font size)
+        if (appliedFromDate === appliedToDate) {
+            return {
+                text: formatDateDisplay(appliedFromDate),
+                className: "text-2xl lg:text-[15px] xl:text-2xl"
+            };
+        }
+
+        const fromDateObj = new Date(appliedFromDate);
+        const toDateObj = new Date(appliedToDate);
+
+        const fromYear = fromDateObj.getFullYear();
+        const toYear = toDateObj.getFullYear();
+        const fromMonth = fromDateObj.toLocaleString('en-US', { month: 'short' });
+        const toMonth = toDateObj.toLocaleString('en-US', { month: 'short' });
+        const fromDay = fromDateObj.getDate();
+        const toDay = toDateObj.getDate();
+
+        // SCENARIO 1: Same Month, Same Year -> "June 23–30, 2026" (Small)
+        if (fromYear === toYear && fromMonth === toMonth) {
+            return {
+                text: `${fromMonth} ${fromDay}–${toDay}, ${fromYear}`,
+                className: "text-xl lg:text-[13px] xl:text-xl 2xl:text-2xl"
+            };
+        }
+
+        // SCENARIO 2: Different Month, Same Year -> "Feb 4 – Jun 30, 2026" (Smaller)
+        if (fromYear === toYear) {
+            return {
+                text: `${fromMonth} ${fromDay} – ${toMonth} ${toDay}, ${fromYear}`,
+                className: "text-base lg:text-[11px] xl:text-base 2xl:text-xl"
+            };
+        }
+
+        // SCENARIO 3: Different Years -> "Dec 30, 2026 – Jan 2, 2027" (Smallest)
+        return {
+            text: `${fromMonth} ${fromDay}, ${fromYear} – ${toMonth} ${toDay}, ${toYear}`,
+            className: "text-xs lg:text-[10px] xl:text-sm 2xl:text-base"
+        };
+    })();
     // const formatDate = (date: string) =>
     //     new Date(date).toLocaleDateString("en-US", {
     //         month: "long",
@@ -188,8 +230,53 @@ const Landing = ({ clientName }: LandingProps) => {
         <span className="inline-block w-8 h-8 border-4 border-slate-200 border-t-teal-500 rounded-full animate-spin" />
     );
 
+    const [activeTab, setActiveTab] = useState<"all" | number | null> (null);
+    
+    const handleButtonDateFilter = (days: "all" | number) => {
+        const today = new Date();
+        const to = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        
+        // Set which button is active
+        setActiveTab(days);
+
+        if (days === 'all') {
+            setFromDate("");
+            setToDate("");
+        } else {
+            const from = new Date();
+            from.setDate(today.getDate() - days);
+            setFromDate(from.toISOString().split('T')[0]);
+            setToDate(to);
+        }
+    };
+    
+    const [dimensions, setDimensions] = React.useState({
+        width: typeof window !== 'undefined' ? window.innerWidth : 0,
+        height: typeof window !== 'undefined' ? window.innerHeight : 0,
+        });
+
+        React.useEffect(() => {
+        const handleResize = () => {
+            setDimensions({
+            width: window.innerWidth,
+            height: window.innerHeight,
+            });
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     return (
         <div className="relative mt-12 lg:mt-0 p-4 md:p-8 bg-slate-50 min-h-screen font-sans overflow-hidden">
+            {/* Screen Dimension Indicator */}
+            <div className="fixed bottom-4 right-4 z-50 bg-slate-900/90 text-white font-mono text-[11px] px-3 py-1.5 rounded-full shadow-lg border border-slate-700 pointer-events-none tracking-wider">
+                {dimensions.width}px × {dimensions.height}px
+                <span className="ml-2 px-1 py-0.5 bg-teal-500 text-slate-950 font-bold rounded text-[9px] uppercase">
+                    {dimensions.width >= 1536 ? '2xl' : dimensions.width >= 1280 ? 'xl' : dimensions.width >= 1024 ? 'lg' : dimensions.width >= 768 ? 'md' : dimensions.width >= 640 ? 'sm' : 'xs'}
+                </span>
+            </div>
+
             {/* Global Background Accents to match the new component colors */}
             <div className="absolute top-0 right-0 w-[40%] h-[40%] rounded-full bg-teal-100/30 blur-[120px] pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-[40%] h-[40%] rounded-full bg-purple-100/30 blur-[120px] pointer-events-none" />
@@ -208,90 +295,102 @@ const Landing = ({ clientName }: LandingProps) => {
             )}
 
             {/* Date Selector */}
-            <div className="flex flex-col md:flex-row gap-2 md:gap-5 lg:gap-5 xl:gap-8">
-                <div>
+            <div className="flex flex-col lg:flex-row gap-3 w-full items-center">
+                {/* Filter Inputs Container */}
+                <div className="flex flex-nowrap overflow-x-auto pb-2 md:pb-0 md:flex-wrap lg:flex-nowrap lg:flex-[5] gap-3 w-full scrollbar-hide items-center">
+                    
+                    {/* QUICK FILTERS */}
+                    <div className="flex gap-2 min-w-max lg:flex-none">
+                        <button
+                            onClick={() => handleButtonDateFilter(7)}
+                            className={`px-3 py-2 text-xs font-semibold rounded-xl transition-all border ${
+                                activeTab === 7
+                                    ? 'bg-emerald-500 text-white border-emerald-500 shadow-sm'
+                                    : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                            }`}
+                        >
+                            Last 7 Days
+                        </button>
+
+                        <button
+                            onClick={() => handleButtonDateFilter(20)}
+                            className={`px-3 py-2 text-xs font-semibold rounded-xl transition-all border ${
+                                activeTab === 20
+                                    ? 'bg-emerald-500 text-white border-emerald-500 shadow-sm'
+                                    : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                            }`}
+                        >
+                            Last 20 Days
+                        </button>
+                    </div>
+
                     {/* FROM DATE */}
-                    <div 
-                        className="w-full sm:w-55 group relative flex items-center gap-3 bg-white px-4 py-2.5 rounded-2xl border border-stone-200 shadow-sm hover:border-emerald-400 hover:shadow-md hover:shadow-emerald-500/5 transition-all cursor-pointer"
-                        onClick={(e) => (e.currentTarget.querySelector('input') as HTMLInputElement)?.showPicker()}
+                    <div
+                        className="relative min-w-35 md:flex-1 lg:flex-[1.5]"
+                        onClick={(e) => {
+                            if ((e.target as HTMLElement).tagName !== "INPUT") {
+                                const input = (e.currentTarget.querySelector("input") as HTMLInputElement);
+                                input?.showPicker?.();
+                            }
+                        }}
                     >
-                        <div className="bg-emerald-50 p-2 rounded-xl text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
-                            <CiCalendar size={20} />
-                        </div>
-                        
-                        <div className="flex">
-                            <input 
-                                type="date" 
-                                value={fromDate}
-                                max={new Date().toISOString().split("T")[0]} // Prevents future dates
-                                onChange={(e) => setFromDate(e.target.value)}
-                                className="text-sm font-black text-stone-700 bg-transparent outline-none cursor-pointer appearance-none"
-                            />
-                        </div>
-                        
-                        {/* Subtle decorative arrow */}
-                        <div className="text-stone-300 ml-auto">
-                            <HiChevronDown size={16} />
-                        </div>
+                        <span className="absolute inset-y-0 left-2.5 flex items-center text-emerald-400">
+                            <CiCalendar size={18} />
+                        </span>
+                        <input
+                            type="date"
+                            value={fromDate}
+                            max={toDate || new Date().toISOString().split("T")[0]}
+                            onChange={(e) => setFromDate(e.target.value)}
+                            className="w-full border border-stone-200 rounded-xl pl-9 px-2 py-2 text-sm focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-400 outline-none text-stone-600 transition-all font-semibold"
+                        />
                     </div>
-                </div>
 
-                {/* Separator */}
-                <div className="flex items-center justify-center text-sm font-semibold text-stone-400">
-                    -
-                </div>
-
-                <div>
                     {/* TO DATE */}
-                    <div 
-                        className="w-full sm:w-55 group relative flex items-center gap-3 bg-white px-4 py-2.5 rounded-2xl border border-stone-200 shadow-sm hover:border-emerald-400 hover:shadow-md hover:shadow-emerald-500/5 transition-all cursor-pointer"
-                        onClick={(e) => (e.currentTarget.querySelector('input') as HTMLInputElement)?.showPicker()}
+                    <div
+                        className="relative min-w-35 md:flex-1 lg:flex-[1.5]"
+                        onClick={(e) => {
+                            if ((e.target as HTMLElement).tagName !== "INPUT") {
+                                const input = (e.currentTarget.querySelector("input") as HTMLInputElement);
+                                input?.showPicker?.();
+                            }
+                        }}
                     >
-                        <div className="bg-emerald-50 p-2 rounded-xl text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
-                            <CiCalendar size={20} />
-                        </div>
-                        
-                        <div className="flex">
-                            <input 
-                                type="date" 
-                                value={toDate}
-                                max={new Date().toISOString().split("T")[0]} // Prevents future dates
-                                onChange={(e) => setToDate(e.target.value)}
-                                className="text-sm font-black text-stone-700 bg-transparent outline-none cursor-pointer appearance-none"
-                            />
-                        </div>
-                        
-                        {/* Subtle decorative arrow */}
-                        <div className="text-stone-300 ml-auto">
-                            <HiChevronDown size={16} />
-                        </div>
+                        <span className="absolute inset-y-0 left-2.5 flex items-center text-emerald-400">
+                            <CiCalendar size={18} />
+                        </span>
+                        <input
+                            type="date"
+                            value={toDate}
+                            min={fromDate || undefined}
+                            max={new Date().toISOString().split("T")[0]}
+                            onChange={(e) => setToDate(e.target.value)}
+                            className="w-full border border-stone-200 rounded-xl pl-9 px-2 py-2 text-sm focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-400 outline-none text-stone-600 transition-all font-semibold"
+                        />
                     </div>
                 </div>
 
-                {/* Apply Button */}
-                <div className="flex items-center">
-                    <button 
+                {/* Action Buttons */}
+                <div className="flex md:flex w-full md:w-full lg:flex-[2] gap-2 items-center border-t lg:border-t-0 pt-3 lg:pt-0 border-stone-100">
+                    <button
                         onClick={handleApplyFilters}
-                        className="flex-1 md:flex-none bg-teal-500 text-white px-6 py-2 rounded-xl hover:bg-emerald-600 transition-all font-bold text-sm h-11 shadow-lg shadow-emerald-500/20 active:scale-[0.98]"
+                        className="bg-teal-500 text-white px-4 py-2 rounded-xl hover:bg-emerald-600 transition-all font-bold text-sm h-10 shadow-lg shadow-emerald-500/20 active:scale-[0.98] w-full lg:flex-1"
                     >
-                        Apply
+                        Filter
                     </button>
-                </div>
 
-                {/* Clear Button */}
-                <div className="flex items-center">
-                    <button 
+                    <button
                         onClick={handleClearFilters}
-                        className="flex-1 md:flex-none flex items-center justify-center bg-white text-stone-600 px-4 py-2 rounded-xl border border-stone-100 hover:bg-stone-50 transition-all font-bold text-sm h-11 shadow-sm active:scale-[0.98]"
+                        className="text-stone-600 bg-white border border-stone-200 hover:bg-stone-50 transition-colors px-4 py-2 rounded-xl font-bold text-sm h-10 flex items-center justify-center gap-1 w-full lg:flex-1"
                     >
-                       <RxCross2 className="mr-2"/>Clear
+                        <RxCross2 /> Clear
                     </button>
                 </div>
             </div>
             
 
             {/* Overview */}
-            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-4 gap-8 mt-10">
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-4 gap-0 lg:gap-8 mt-10">
 
                 <div>
                     {/* Last Login */}
@@ -299,11 +398,16 @@ const Landing = ({ clientName }: LandingProps) => {
                         <span className="w-1.5 h-6 bg-teal-500 rounded-full"></span> Overview
                     </h3>
                     <div className="grid sm:grid-cols-1 grid-cols-1 gap-6">
-                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all">
-                            <RiTimeLine className="rounded-2xl p-3 text-5xl bg-blue-50 text-blue-600 mb-4"/>
-                            <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Date</h4>
-                            <p className="text-2xl font-black mt-1 text-slate-800">
-                                {loading ? <Spinner /> : labelDateSelected}
+                        {/* Added 'min-h-[156px] flex flex-col justify-between' to match typical height of the other cards */}
+                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all min-h-[156px] flex flex-col justify-between">
+                            <div>
+                                <RiTimeLine className="rounded-2xl p-3 text-5xl bg-blue-50 text-blue-600 mb-4 flex-shrink-0"/>
+                                <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Date</h4>
+                            </div>
+                            
+                            {/* The text sizing classes are now injected straight from our config object */}
+                            <p className={`font-black mt-1 text-slate-800 whitespace-nowrap overflow-visible tracking-tight leading-7 ${dateDisplayConfig.className}`}>
+                                {loading ? <Spinner /> : dateDisplayConfig.text}
                             </p>
                         </div>
                     </div>
@@ -314,15 +418,17 @@ const Landing = ({ clientName }: LandingProps) => {
                     <h3 className="text-slate-800 font-black mb-0 sm:mb-5 text-sm uppercase tracking-widest flex items-center gap-2">
                         <span className="w-1.5 h-6 rounded-full"></span>
                     </h3>
-                        <div className="grid sm:grid-cols-1 grid-cols-1 gap-6">
-                            <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all">
+                    <div className="grid sm:grid-cols-1 grid-cols-1 gap-6">
+                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all min-h-[156px] flex flex-col justify-between">
+                            <div>
                                 <PiHandDeposit className="rounded-2xl p-3 text-5xl bg-red-50 text-red-600 mb-4"/>
-                                <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Expected Settlement <span className="text-red-300"></span> </h4> 
-                                <p className="text-2xl font-black mt-1 text-slate-800">
-                                    {loading ? <Spinner /> : `₱${(overviewData?.expected ?? 0).toLocaleString("en-PH", {minimumFractionDigits: 2})}`}
-                                </p>
+                                <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Expected Settlement</h4> 
                             </div>
+                            <p className="text-2xl font-black mt-1 text-slate-800 leading-7">
+                                {loading ? <Spinner /> : `₱${(overviewData?.expected ?? 0).toLocaleString("en-PH", {minimumFractionDigits: 2})}`}
+                            </p>
                         </div>
+                    </div>
                 </div>
 
                 {/* Total Settled */}
@@ -331,14 +437,15 @@ const Landing = ({ clientName }: LandingProps) => {
                         <span className="w-1.5 h-6 rounded-full"></span>
                     </h3>
                     <div className="grid sm:grid-cols-1 grid-cols-1 gap-6">
-                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all">
-                            <LuGoal className="rounded-2xl p-3 text-5xl bg-green-100 text-green-500 mb-4"/>
-                            <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Total Settled <span className="text-red-300"></span></h4>
-                            <p className="text-2xl font-black mt-1 text-slate-800">
+                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all min-h-[156px] flex flex-col justify-between">
+                            <div>
+                                <LuGoal className="rounded-2xl p-3 text-5xl bg-green-100 text-green-500 mb-4"/>
+                                <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Total Settled</h4>
+                            </div>
+                            <p className="text-2xl font-black mt-1 text-slate-800 leading-7">
                                 {loading ? <Spinner /> : `₱${(overviewData?.settled ?? 0).toLocaleString("en-PH", {minimumFractionDigits: 2}) ?? "0.00"}`}
                             </p>
                         </div>
-
                     </div>
                 </div>
 
@@ -348,17 +455,18 @@ const Landing = ({ clientName }: LandingProps) => {
                         <span className="w-1.5 h-6 rounded-full"></span>
                     </h3>
                     <div className="grid sm:grid-cols-1 grid-cols-1 gap-6">
-                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all">
+                        <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all min-h-[156px] flex flex-col justify-between">
+                            <div>
                                 <LuHandCoins className="rounded-2xl p-3 text-5xl bg-teal-100 text-teal-500 mb-4"/>
-                        <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] whitespace-nowrap">Today's Transactions</h4>
-                        <p className="text-2xl font-black mt-1 text-slate-800">
-                            ₱{loading ? <Spinner/> : `${(overviewData?.total ?? 0).toLocaleString('en-PH', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            })}`}
-                        </p>
-                    </div>
-
+                                <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] whitespace-nowrap">Today's Transactions</h4>
+                            </div>
+                            <p className="text-2xl font-black mt-1 text-slate-800 leading-7">
+                                ₱{loading ? <Spinner/> : `${(overviewData?.total ?? 0).toLocaleString('en-PH', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                })}`}
+                            </p>
+                        </div>
                     </div>
                 </div>
 
