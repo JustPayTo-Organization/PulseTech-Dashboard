@@ -205,6 +205,8 @@ const Landing = ({ clientName }: LandingProps) => {
     // }, []);
     }, [appliedFromDate, appliedToDate]);
     
+    //Total of Expected and Settled for Today's Transactions
+    const totalExpectedSettledTrx = Number(overviewData?.expected ?? 0) + Number(overviewData?.settled ?? 0);
     // Please check if need both cash in and cash out for the success transactions
     // const totalSuccessTransactions = (paymentData?.SUCCESS ?? 0) + (fundTransferData?.SUCCESS ?? 0);
 
@@ -458,13 +460,13 @@ const Landing = ({ clientName }: LandingProps) => {
                         <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 hover:border-teal-200 transition-all min-h-[156px] flex flex-col justify-between">
                             <div>
                                 <LuHandCoins className="rounded-2xl p-3 text-5xl bg-teal-100 text-teal-500 mb-4"/>
-                                <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] whitespace-nowrap">Today's Transactions</h4>
+                                <h4 className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] whitespace-nowrap">Total Transactions</h4>
                             </div>
                             <p className="text-2xl font-black mt-1 text-slate-800 leading-7">
-                                ₱{loading ? <Spinner/> : `${(overviewData?.total ?? 0).toLocaleString('en-PH', {
+                                ₱{loading ? <Spinner/> : (totalExpectedSettledTrx.toLocaleString("en-PH",{
                                     minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                })}`}
+                                    maximumFractionDigits: 2,
+                                }))}
                             </p>
                         </div>
                     </div>
